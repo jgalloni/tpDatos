@@ -1,0 +1,9 @@
+Somos el grupo 27, nota: 6.5
+
+Va a ser muy bueno para ustedes trabajar en una implementación propia de Random Forest, es FUNDAMENTAL que lean el paper d eLeo Breiman.
+Independientemente del resultado que logren en Kaggle se va a tener en cuenta el funcionamiento de su implementación de RF (esto es bueno).
+Revisar atributos a usar, considerar la posibilidad de paralelizar.
+
+El mes y el año pueden ser importantes.
+
+Dar peso a la distancia en años por lo de robo de autos.
