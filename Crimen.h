@@ -77,6 +77,21 @@ public:
     }
 
     void setDireccion(char *direccion) {
+		std::string slash ("/");
+		std::string st ("ST");
+		std::string av("AV");
+		std::string dirs[3] = { slash, st, av };
+		std::size_t found;
+
+		for (int i = 0; i < 3; i++)
+		{
+			found = std::string(direccion).find(dirs[i]);
+			if (found != std::string::npos)
+			{
+				Crimen::direccion = dirs[i];
+				return;
+			}
+		}
         Crimen::direccion = std::string(direccion);
     }
 
