@@ -4,6 +4,6 @@
 using namespace std;
 
 int main() {
-    readCsv("C:\\Users\\Male\\Desktop\\TP\\tpDatos\\trainmin.csv");
+    readCsv("train.csv");
     return 0;
 }

@@ -7,6 +7,26 @@
 #include <fstream>
 #include <sstream>
 
+void check_comillas(char* linea){
+	int i = 0;
+	int comillas = 0;
+	for (int i = 0; i < 300; i++)
+	{
+		if (*(linea+i) == '\"')
+		{
+			if (*(linea+i + 1) == '\"')
+			{
+				comillas++;
+			}
+		}
+		if (*(linea+i) == ',' && comillas % 2 != 0)
+		{
+			*(linea+i) = ' ';
+		}
+	}
+}
+
+
 std::vector<Crimen> readCsv(std::string fileName) {
     std::ifstream archivo;
     archivo.open(fileName);
@@ -20,12 +40,13 @@ std::vector<Crimen> readCsv(std::string fileName) {
         std::cout<<"error al abrir el archivo:"<<fileName<<"\n";
         return crimenes ;
     }
-    std::cout<<"leyedo el archivo:"<<fileName<<"\n";
+    std::cout<<"leyendo el archivo:"<<fileName<<"\n";
     Crimen crimen=Crimen();
     archivo.getline(linea,300);
     while(!archivo.eof()) {
         archivo.getline(linea,300);
-        sscanf(linea,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]",fecha,categoria,desc,dia,distrito,resolucion,direccion,&x,&y);
+		check_comillas(linea);
+		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion, &x, &y);
         crimen.setDistrito(distrito);
         crimen.setDireccion(direccion);
         crimen.setDiaDeLaSemana(dia);
@@ -33,7 +54,7 @@ std::vector<Crimen> readCsv(std::string fileName) {
         crimen.setCategoria(categoria);
         tm tm1;
         sscanf(fecha,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
-               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
+              &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
         crimen.setFecha(tm1);
         crimen.setResolucion(resolucion);
         crimenes.push_back(crimen);
