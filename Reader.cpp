@@ -30,11 +30,17 @@ void check_comillas(char* linea){
 std::vector<Crimen> readCsv(std::string fileName) {
     std::ifstream archivo;
     archivo.open(fileName);
-    char linea[300];
-    char distrito[30],fecha[30],categoria[30],desc[30],dia[30];
-    char resolucion[30];
-    char direccion[30];
+//     char linea[300];
+//     char distrito[30],fecha[30],categoria[30],desc[30],dia[30];
+//     char resolucion[30];
+//     char direccion[30];
+	char linea[400];
+	char distrito[60], fecha[60], categoria[60], desc[100], dia[60];
+	char resolucion[60];
+	char direccion[60];
 	//float x, y;
+	char x[60];
+	char y[60];
     std::vector<Crimen> crimenes;
     if(!archivo.is_open()){
         std::cout<<"error al abrir el archivo:"<<fileName<<"\n";
@@ -42,12 +48,12 @@ std::vector<Crimen> readCsv(std::string fileName) {
     }
     std::cout<<"leyendo el archivo:"<<fileName<<"\n";
     Crimen crimen=Crimen();
-    archivo.getline(linea,300);
-	archivo.getline(linea, 300);
+    archivo.getline(linea,400);
+	archivo.getline(linea, 400);
 	while (!archivo.eof()) {
 		check_comillas(linea);
 		//sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion, &x, &y);
-		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion);
+		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion,x,y);
         crimen.setDistrito(distrito);
         crimen.setDireccion(direccion);
         crimen.setDiaDeLaSemana(dia);
@@ -59,7 +65,7 @@ std::vector<Crimen> readCsv(std::string fileName) {
         crimen.setFecha(tm1);
         crimen.setResolucion(resolucion);
         crimenes.push_back(crimen);
-		archivo.getline(linea, 300);
+		archivo.getline(linea, 400);
     }
     std::cout<<"se leyeron "<<crimenes.size()<<" registros"<<"\n";
     return crimenes;
