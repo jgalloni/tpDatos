@@ -34,7 +34,7 @@ std::vector<Crimen> readCsv(std::string fileName) {
     char distrito[30],fecha[30],categoria[30],desc[30],dia[30];
     char resolucion[30];
     char direccion[30];
-    float x,y;
+	//float x, y;
     std::vector<Crimen> crimenes;
     if(!archivo.is_open()){
         std::cout<<"error al abrir el archivo:"<<fileName<<"\n";
@@ -43,10 +43,11 @@ std::vector<Crimen> readCsv(std::string fileName) {
     std::cout<<"leyendo el archivo:"<<fileName<<"\n";
     Crimen crimen=Crimen();
     archivo.getline(linea,300);
-    while(!archivo.eof()) {
-        archivo.getline(linea,300);
+	archivo.getline(linea, 300);
+	while (!archivo.eof()) {
 		check_comillas(linea);
-		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion, &x, &y);
+		//sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion, &x, &y);
+		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion);
         crimen.setDistrito(distrito);
         crimen.setDireccion(direccion);
         crimen.setDiaDeLaSemana(dia);
@@ -58,6 +59,7 @@ std::vector<Crimen> readCsv(std::string fileName) {
         crimen.setFecha(tm1);
         crimen.setResolucion(resolucion);
         crimenes.push_back(crimen);
+		archivo.getline(linea, 300);
     }
     std::cout<<"se leyeron "<<crimenes.size()<<" registros"<<"\n";
     return crimenes;
