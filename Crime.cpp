@@ -5,8 +5,8 @@
 #include "Crime.h"
 
 Crime::Crime(float x, float y){
-	Coordenada coordenada = new Coordenada(x,y);
-	this->coordenada = coordenada;
+	Coordinate coordinate = new Coordinate(x,y);
+	this->coordinate = coordinate;
 }
 
 void Crime::set_category(char *category) {
