@@ -7,66 +7,73 @@
 #include <fstream>
 #include <sstream>
 
-void check_comillas(char* linea){
+void check_quotemarks(char* line){
 	int i = 0;
-	int comillas = 0;
+	int quotemarks = 0;
 	for (int i = 0; i < 300; i++)
 	{
-		if (*(linea+i) == '\"')
+		if (*(line+i) == '\"')
 		{
-			if (*(linea+i + 1) == '\"')
+			if (*(line+i + 1) == '\"')
 			{
-				comillas++;
+				quotemarks++;
 			}
 		}
-		if (*(linea+i) == ',' && comillas % 2 != 0)
+		if (*(line+i) == ',' && quotemarks % 2 != 0)
 		{
-			*(linea+i) = ' ';
+			*(line+i) = ' ';
 		}
 	}
 }
 
 
-std::vector<Crimen> readCsv(std::string fileName) {
-    std::ifstream archivo;
-    archivo.open(fileName);
-//     char linea[300];
-//     char distrito[30],fecha[30],categoria[30],desc[30],dia[30];
-//     char resolucion[30];
-//     char direccion[30];
-	char linea[400];
-	char distrito[60], fecha[60], categoria[60], desc[100], dia[60];
-	char resolucion[60];
-	char direccion[60];
+std::vector<Crime> readCsv(std::string fileName) {
+	
+    std::ifstream file_c;
+    file_c.open(fileName);
+    
+//     char line[300];
+//     char district[30],date[30],category[30],desc[30],day[30];
+//     char resolution[30];
+//     char adress[30];
+	char line[400];
+	char district[60], date[60], category[60], desc[100], day[60];
+	char resolution[60];
+	char adress[60];
 	//float x, y;
 	char x[60];
 	char y[60];
-    std::vector<Crimen> crimenes;
-    if(!archivo.is_open()){
-        std::cout<<"error al abrir el archivo:"<<fileName<<"\n";
-        return crimenes ;
+	
+    std::vector<Crime> crimes;
+    
+    if(!file_c.is_open()){
+        std::cout<<"Error reading file:"<<fileName<<"\n";
+        return crimes ;
     }
-    std::cout<<"leyendo el archivo:"<<fileName<<"\n";
-    Crimen crimen=Crimen();
-    archivo.getline(linea,400);
-	archivo.getline(linea, 400);
-	while (!archivo.eof()) {
-		check_comillas(linea);
-		//sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion, &x, &y);
-		sscanf(linea, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", fecha, categoria, desc, dia, distrito, resolucion, direccion,x,y);
-        crimen.setDistrito(distrito);
-        crimen.setDireccion(direccion);
-        crimen.setDiaDeLaSemana(dia);
-        crimen.setDescripcion(desc);
-        crimen.setCategoria(categoria);
+    
+    std::cout<<"Reading file:"<<fileName<<"\n";
+    
+    Crime crime;
+    file_c.getline(line,400);
+	file_c.getline(line, 400);
+	
+	while (!file_c.eof()) {
+		check_quotemarks(line);
+		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, &x, &y);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress,x,y);
+		crime = new Crime(x,y);
+        crime.load_district(district);
+        crime.load_adress(adress);
+        crime.load_day_of_week(day);
+        crime.set_category(category);
         tm tm1;
-        sscanf(fecha,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
+        sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
-        crimen.setFecha(tm1);
-        crimen.setResolucion(resolucion);
-        crimenes.push_back(crimen);
-		archivo.getline(linea, 400);
+        crime.load_date(tm1);
+        crimes.push_back(crime);
+		file_c.getline(line, 400);
     }
-    std::cout<<"se leyeron "<<crimenes.size()<<" registros"<<"\n";
-    return crimenes;
+    
+    std::cout<< crimes.size()<<" registers have been read."<<"\n";
+    return crimes;
 }

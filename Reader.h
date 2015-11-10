@@ -7,10 +7,10 @@
 
 #include <string>
 #include <vector>
-#include "Crimen.h"
+#include "Crime.h"
 
 
-std::vector<Crimen> readCsv(std::string fileName);
+std::vector<Crime> readCsv(std::string fileName);
 
 
 #endif //TPDATOS_READER_H
