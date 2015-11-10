@@ -1,3 +1,7 @@
+__________________
+Informe
+__________________
+
 Somos el grupo 27, nota: 6.5
 
 Va a ser muy bueno para ustedes trabajar en una implementación propia de Random Forest, es FUNDAMENTAL que lean el paper d eLeo Breiman.
@@ -7,3 +11,18 @@ Revisar atributos a usar, considerar la posibilidad de paralelizar.
 El mes y el año pueden ser importantes.
 
 Dar peso a la distancia en años por lo de robo de autos.
+
+__________________
+Marko 10.11.2015
+__________________
+
+La idea es que al arbol le lleguen features genericos. Tienen que ser discretos o continuos, pero si el arbol se pusiera a hacer tests para cada tipo de variable que le pueda llegar a caer, el algoritmo se complica bastante. Para eso, cree la estructura feature. Tiene un nombre y un puntero a void que en los features continuos son floats y en los discretos otra cosa a definir (strings, probablemente).
+El planteo es el siguiente:
+La clase crimen, en lugar de tener quillicientos atributos de tipos diferentes tiene:
+-una categoria
+-una coordenada (esto no es un feature porque lo vamos a usar para medir distancias con los centroides y ver que puntos usar en la clasificacion)
+-un vector de features. Que sea un vector va a hacer mas facil agregar y sacar features y sacarlos al azar para crear samples para los arboles individuales. Un hash seria otra posibilidad, pero no se que ventajas tendria, siendo que de todas formas es una lista chiquita, asi que recuperar un feature es casi tiempo constante.
+
+Proximos pasos:
+1) Implementar Crime para que se instancie con clase y coordenadas por parametro, y que internamente cree un vector de features para ir agregando. Los metodos a los que le cambie el nombre de set_x a load_x son metodos que tendrian que pasar el feature a un formato copado, meterlo en un feature y agregarlo al vector.
+2) Implementar algoritmo que tome el dataset y devuelva un sample con n filas y m columnas, ambos al azar (pero mantener la clase). Con eso le vamos a dar de comer a los arboles.
