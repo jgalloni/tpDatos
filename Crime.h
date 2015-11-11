@@ -15,13 +15,15 @@ class Crime {
 	
 		Crime(float x, float y);
 
-		Coordinate coordinate;
+		Crime(Crime &crime);
+
+		Coordinate * coordinate;
 		struct tm date;
 		std::string category;
-		std::string day_of_week;
-		std::string district;
-		std::string adress;
-
+		//std::string day_of_week;
+		//std::string district;
+		//std::string adress;
+		std::string features[3];//day,district,address
 		void set_category(char *category);
 		void load_date(const tm &date);
 		void load_day_of_week(char *day_of_Week);

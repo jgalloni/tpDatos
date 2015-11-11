@@ -1,6 +1,7 @@
 #include "Crime.h"
 #include "C45.h"
 #include "Coordinate.h"
+#include "Reader.h"
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -59,5 +60,6 @@ void c45_basic_tests() {
 int main(int argc, char** argv) {
 	coordinate_tests();
 	c45_basic_tests();
+//	readCsv("train.csv");
    	return 0;
 }
