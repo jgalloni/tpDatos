@@ -10,6 +10,10 @@
 #include <stddef.h>
 #include <iostream>
 
+#define DAY_OF_WEEK 0
+#define DISTRICT 1
+#define ADRESS 2
+
 void print_title(const char* test_title){
 	using namespace std;
 	cout << "===================================" << endl;
@@ -21,15 +25,13 @@ void print_test(const char* name, bool result) {
     printf("%s: %s\n", name, result? "OK" : "ERROR");
 }
 
-void reader_test() {
+void reader_test(std::vector<Crime*> crimes) {
 	
 	print_title(" READER TEST ");
 	
-	std::vector<Crime*> crimes = readCsv("train.csv");
 	print_test("There are 878049 registers in train set", crimes.size() == 878049);
 	print_test("There are not 87 registers in train set", crimes.size() != 87);
 
-	//delete(*crimes);
 }
 
 void coordinate_tests() {
@@ -55,7 +57,7 @@ void coordinate_tests() {
 	delete(c4);
 }
 
-void c45_basic_tests() {
+void c45_basic_tests(std::vector<Crime*> homogeneous) {
 	
 	print_title(" C45 TRIVIAL CHECKS ");
 	
@@ -69,7 +71,6 @@ void c45_basic_tests() {
 
 	print_test("Empty tree is a leaf", (*t1).is_leaf());
 
-	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
 	C45* t2 = new C45(&homogeneous);
 	class_of_tree = t2->tree_class;
 	print_test("Category of homogeneous.csv set is 'OTHER OFFENSES'", class_of_tree.compare("OTHER OFFENSES") == 0);
@@ -79,11 +80,18 @@ void c45_basic_tests() {
 	delete(t2);
 }
 
-void random_forest_test() {
+void c45_set_operation_test(std::vector<Crime*> homogeneous) {
+	print_title(" OPERATIONS WITH SETS ");
+	
+	print_test("Homogeneous set has 1 subset by day of week (Wednesday)", subsets_by_feature(homogeneous, DAY_OF_WEEK) == 1);
+	print_test("Homogeneous set has 5 subsets by district", subsets_by_feature(homogeneous, DISTRICT) == 5);
+	//print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADRESS) == 3);
+}
+
+void random_forest_test(std::vector<Crime*> crimes) {
 	
 	print_title(" RANDOM FOREST TEST ");
 	
-	std::vector<Crime*> crimes = readCsv("train.csv");
 	std::vector<Crime*> sub1 = generate_subset(crimes, 50);
 	
 	print_test("Succesfully generates subset of size 50", sub1.size() == 50);
@@ -93,9 +101,13 @@ void random_forest_test() {
 }
 
 int main(int argc, char** argv) {
-	reader_test();
+	std::vector<Crime*> train = readCsv("train.csv");
+	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
+	
+	reader_test(train);
 	coordinate_tests();
-	c45_basic_tests();
-	random_forest_test();
+	c45_basic_tests(homogeneous);
+	c45_set_operation_test(homogeneous);
+	random_forest_test(train);
    	return 0;
 }

@@ -2,11 +2,12 @@
 #include "C45.h"
 #include <string>
 #include <vector>
+#include <map>
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 
-//AUX
+////AUX FUNCTIONS
 
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
 std::string class_of_tree(std::vector<Crime*>* crimes){
@@ -22,7 +23,38 @@ std::string class_of_tree(std::vector<Crime*>* crimes){
 	return t_class;
 }
 
-//CLASS
+std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std::vector<Crime*> set, int feature_index){
+	//ay caramba
+	std::map<const std::string, std::vector<Crime*>*>* subsets = new std::map<const std::string, std::vector<Crime*>*>();
+	Crime* crime;
+	
+	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
+		crime = set[i];
+		std::string category = crime->features[feature_index];
+		
+		if(subsets->count(category) == 0) {
+				(*subsets)[category] = new std::vector<Crime*>();
+		}
+		
+		(*subsets)[category]->push_back(crime);
+	}
+	
+	return *subsets;
+}
+
+int subsets_by_feature(std::vector<Crime*> set, int feature_index){
+	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
+	return subsets.size();
+}
+
+////TEST FUNCTIONS
+// DISCRETE TEST FUNCTIONS
+
+
+// CONTINUOUS TEST FUNCTIONS
+
+
+////CLASS
 
 C45::C45(std::vector<Crime*>* crimes){
 	tree_class = class_of_tree(crimes);
