@@ -10,9 +10,10 @@
 #include <stddef.h>
 #include <iostream>
 
+
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
-#define ADRESS 2
+#define ADDRESS 2
 
 void print_title(const char* test_title){
 	using namespace std;
@@ -85,7 +86,7 @@ void c45_set_operation_test(std::vector<Crime*> homogeneous) {
 	
 	print_test("Homogeneous set has 1 subset by day of week (Wednesday)", subsets_by_feature(homogeneous, DAY_OF_WEEK) == 1);
 	print_test("Homogeneous set has 5 subsets by district", subsets_by_feature(homogeneous, DISTRICT) == 5);
-	//print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADRESS) == 3);
+	print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADDRESS) == 3);
 }
 
 void random_forest_test(std::vector<Crime*> crimes) {

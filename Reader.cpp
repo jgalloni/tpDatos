@@ -13,10 +13,7 @@ void check_quotemarks(char* line){
 	{
 		if (*(line+i) == '\"')
 		{
-			if (*(line+i + 1) == '\"')
-			{
-				quotemarks++;
-			}
+			quotemarks++;
 		}
 		if (*(line+i) == ',' && quotemarks % 2 != 0)
 		{
@@ -38,7 +35,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
 	char line[400];
 	char district[60], date[60], category[60], desc[100], day[60];
 	char resolution[60];
-	char resolution2[60];
+	//char resolution2[60];
 	char adress[60];
 	//float x, y;
 	char x[60];
@@ -60,7 +57,8 @@ std::vector<Crime*> readCsv(std::string fileName) {
 	while (!file_c.eof()) {
 		check_quotemarks(line);
 		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, &x, &y);
-		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution,resolution2, adress,x,y);
+		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution,resolution2, adress,x,y);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, x, y);
 		crime = new Crime(atof(x),atof(y));
         crime->load_district(district);
         crime->load_adress(adress);

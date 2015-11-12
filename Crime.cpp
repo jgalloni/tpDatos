@@ -38,12 +38,11 @@ void Crime::load_district(char *district) {
 
 void Crime::load_adress(char *adress) {
 	std::string slash ("/");
-	std::string st ("ST");
 	std::string av("AV");
-	std::string dirs[3] = { slash, st, av };
+	std::string dirs[2] = { slash, av };
 	std::size_t found;
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		found = std::string(adress).find(dirs[i]);
 		if (found != std::string::npos)
@@ -53,7 +52,8 @@ void Crime::load_adress(char *adress) {
 			return;
 		}
 	}
-	this->features[2] = std::string(adress);
+
+	this->features[2] = std::string("ST");
 }
 
 void Crime::set_coordinate(float x, float y) {
