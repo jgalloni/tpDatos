@@ -9,14 +9,14 @@
 //AUX
 
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
-std::string class_of_tree(std::vector<Crime>* crimes){
+std::string class_of_tree(std::vector<Crime*>* crimes){
 	if((*crimes).size() == 0){
 		return "LARCENY/THEFT";	
 	}
 	
-	std::string t_class = (*crimes)[0].category;
+	std::string t_class = (*crimes)[0]->category;
 	for (unsigned i=1; i < (*crimes).size(); i++) {
-	    if ((*crimes)[i].category != t_class) return "";
+	    if ((*crimes)[i]->category != t_class) return "";
 	}
 
 	return t_class;
@@ -24,7 +24,7 @@ std::string class_of_tree(std::vector<Crime>* crimes){
 
 //CLASS
 
-C45::C45(std::vector<Crime>* crimes){
+C45::C45(std::vector<Crime*>* crimes){
 	tree_class = class_of_tree(crimes);
 	children = new std::vector<C45*>();
 }

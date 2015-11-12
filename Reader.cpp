@@ -8,7 +8,6 @@
 #include <sstream>
 
 void check_quotemarks(char* line){
-	int i = 0;
 	int quotemarks = 0;
 	for (int i = 0; i < 300; i++)
 	{
