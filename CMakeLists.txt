@@ -3,5 +3,5 @@ project(tpDatos)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
 
-set(SOURCE_FILES test.cpp Feature.h Feature.cpp Coordinate.cpp Coordinate.h C45.cpp C45.h Reader.cpp Reader.h Crime.cpp Crime.h)
+set(SOURCE_FILES test.cpp random_forest.cpp random_forest.h Feature.h Feature.cpp Coordinate.cpp Coordinate.h C45.cpp C45.h Reader.cpp Reader.h Crime.cpp Crime.h)
 add_executable(tpDatos ${SOURCE_FILES})

@@ -2,6 +2,7 @@
 #include "C45.h"
 #include "Coordinate.h"
 #include "Reader.h"
+#include "random_forest.h"
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -54,8 +55,6 @@ void coordinate_tests() {
 	delete(c4);
 }
 
-
-
 void c45_basic_tests() {
 	
 	print_title(" C45 TRIVIAL CHECKS ");
@@ -80,9 +79,23 @@ void c45_basic_tests() {
 	delete(t2);
 }
 
+void random_forest_test() {
+	
+	print_title(" RANDOM FOREST TEST ");
+	
+	std::vector<Crime*> crimes = readCsv("train.csv");
+	std::vector<Crime*> sub1 = generate_subset(crimes, 50);
+	
+	print_test("Succesfully generates subset of size 50", sub1.size() == 50);
+	print_test("Previous subset not size 51", sub1.size() != 51);
+	
+
+}
+
 int main(int argc, char** argv) {
+	reader_test();
 	coordinate_tests();
 	c45_basic_tests();
-	reader_test();
+	random_forest_test();
    	return 0;
 }
