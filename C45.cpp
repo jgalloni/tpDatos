@@ -104,15 +104,39 @@ float info_x(std::vector<Crime*> set, int feature_index){
 	return info_x;
 }
 
+std::vector<float> split_info(std::vector<Crime*> set, int feature_index){
+	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
+	std::vector<float>* output = new std::vector<float>();
+	float abs_t = set.size();
+	float abs_ti;
+	float info_x = 0;
+	float split_info = 0;
+	std::vector<Crime*>* current_subset;
+	
+	for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
+		current_subset = iterator->second;
+		abs_ti = current_subset->size();
+		info_x = info_x + ( (abs_ti / abs_t) * info( *current_subset ) );
+		split_info = split_info + info( *current_subset );
+	}
+	
+	output->push_back(info_x);
+	output->push_back(split_info);
+	return *output;
+}
+
 float gain(std::vector<Crime*> set, int feature_index){
 	return info(set) - info_x(set, feature_index);
 }
 
-////TEST FUNCTIONS
-// DISCRETE TEST FUNCTIONS
-
-
-// CONTINUOUS TEST FUNCTIONS
+float gain_ratio(std::vector<Crime*> set, int feature_index){
+	std::vector<float> partition_data = split_info(set, feature_index);
+	float info_x = partition_data[0];
+	float split_info = partition_data[1];
+	if(split_info == 0) return 0;
+	
+	return (info(set) - info_x) / split_info;
+}
 
 
 ////CLASS

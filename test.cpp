@@ -121,6 +121,9 @@ void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crim
 	float gain0 = gain(reduced, DAY_OF_WEEK);
 	float gain1 = gain(reduced, DISTRICT);
 	float gain2 = gain(reduced, ADDRESS);
+	float gainr0 = gain_ratio(reduced, DAY_OF_WEEK);
+	float gainr1 = gain_ratio(reduced, DISTRICT);
+	float gainr2 = gain_ratio(reduced, ADDRESS);
 	
 	//Checks back of envelope calculations for these values. Values are not checked exactly in the case of floats.
 	print_test("Info of homogeneous is 0", info0 == 0);
@@ -140,6 +143,11 @@ void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crim
 	print_test("Gain of partitioning by district is less than 1.1", gain1 < 1.1);
 	print_test("Gain of partitioning by address is greater than 0.8", gain2 > 0.8);
 	print_test("Gain of partitioning by address is less than 0.9", gain2 < 0.9);
+	print_test("Gain ratio of partitioning by day of week is 0", gainr0 == 0);
+	print_test("Gain ratio of partitioning by district is greater than 1", gainr1 > 0.3);
+	print_test("Gain ratio of partitioning by district is less than 1.1", gainr1 < 0.4);
+	print_test("Gain ratio of partitioning by address is greater than 0.8", gainr2 > 0.2);
+	print_test("Gain ratio of partitioning by address is less than 0.9", gainr2 < 0.3);
 }
 
 void random_forest_test(std::vector<Crime*> crimes) {
