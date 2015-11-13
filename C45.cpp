@@ -1,5 +1,6 @@
 #include "Crime.h"
 #include "C45.h"
+#include <tgmath.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -22,6 +23,8 @@ std::string class_of_tree(std::vector<Crime*>* crimes){
 
 	return t_class;
 }
+
+//SET OPERATIONS
 
 std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std::vector<Crime*> set, int feature_index){
 	//ay caramba
@@ -47,7 +50,27 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 	return subsets.size();
 }
 
+//GAIN CALCULATION
 
+float info(std::vector<Crime*> set, int feature_index){
+		std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
+		float set_size = (float) set.size();
+		float freq; //absolute frequency of instance
+		float r_freq; //relative frequency of instance
+		float info = 0;
+		
+		typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
+		for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
+			// iterator->first = key
+			// iterator->second = value
+			freq = (float) (iterator->second)->size();
+			r_freq = freq / set_size ;
+			//printf("%f , %f \n", freq, r_freq);
+			info = info - r_freq * ( log2f(r_freq) );
+		}
+		
+		return info;
+}
 
 ////TEST FUNCTIONS
 // DISCRETE TEST FUNCTIONS

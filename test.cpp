@@ -95,6 +95,25 @@ void c45_set_operation_test(std::vector<Crime*> homogeneous) {
 	print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADDRESS) == 3);
 }
 
+void c45_gain_calculation_test(std::vector<Crime*> homogeneous) {
+		
+	print_title(" GAIN CALCULATION TEST ");
+	
+	float info0 = info(homogeneous, DAY_OF_WEEK);
+	float info1 = info(homogeneous, DISTRICT);
+	float info2 = info(homogeneous, ADDRESS);
+	
+	//Checks back of envelope calculations for these values. Values are not checked exactly in the case of floats.
+	print_test("Info of homogeneous in day of week field is 0", info0 == 0);
+	print_test("Info of homogeneous in district field is greater than 0", info1 > 0);
+	print_test("Info of homogeneous in district field is greater than 2.2", info1 > 2.2);
+	print_test("Info of homogeneous in district field is less than 2.3", info1 < 2.3);
+	print_test("Info of homogeneous in address field is greater than 0", info2 > 0);
+	print_test("Info of homogeneous in address field is greater than 1.5", info2 > 1.5);
+	print_test("Info of homogeneous in address field is less than 1.6", info2 < 1.6);
+
+}
+
 void random_forest_test(std::vector<Crime*> crimes) {
 	
 	print_title(" RANDOM FOREST TEST ");
@@ -108,13 +127,14 @@ void random_forest_test(std::vector<Crime*> crimes) {
 }
 
 int main(int argc, char** argv) {
-	//std::vector<Crime*> train = readCsv("train.csv");
+	std::vector<Crime*> train = readCsv("train.csv");
 	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
 	
-	//reader_test(train);
+	reader_test(train);
 	coordinate_tests();
 	c45_basic_tests(homogeneous);
 	c45_set_operation_test(homogeneous);
-	//random_forest_test(train);
+	c45_gain_calculation_test(homogeneous);
+	random_forest_test(train);
    	return 0;
 }

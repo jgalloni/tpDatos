@@ -13,6 +13,8 @@ std::string class_of_tree(std::vector<Crime*>* crimes);
 std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std::vector<Crime*> set, int feature_index);
 int subsets_by_feature(std::vector<Crime*> set, int feature_index);
 
+float info(std::vector<Crime*> set, int feature_index);
+
 class C45 {
 	public:
 		C45(std::vector<Crime*>* crimes);
@@ -21,7 +23,7 @@ class C45 {
 		std::vector<C45*>* children;
 		std::vector<int>* feature_indeces;
 		bool is_leaf();
-		void C45::set_feature_indeces(std::vector<int>* indeces);
+		void set_feature_indeces(std::vector<int>* indeces);
 };
 
 
