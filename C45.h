@@ -19,8 +19,9 @@ class C45 {
 
 		std::string tree_class;
 		std::vector<C45*>* children;
-
+		std::vector<int>* feature_indeces;
 		bool is_leaf();
+		void C45::set_feature_indeces(std::vector<int>* indeces);
 };
 
 

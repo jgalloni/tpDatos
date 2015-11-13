@@ -47,6 +47,8 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 	return subsets.size();
 }
 
+
+
 ////TEST FUNCTIONS
 // DISCRETE TEST FUNCTIONS
 
@@ -59,12 +61,19 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 C45::C45(std::vector<Crime*>* crimes){
 	tree_class = class_of_tree(crimes);
 	children = new std::vector<C45*>();
+	//lo hago empezar con todas las features
+	feature_indeces = new std::vector<int>{ 0, 1, 2 };
 }
 
 bool C45::is_leaf(){
 	std::string t_class = this->tree_class;
 	return !t_class.empty();
 }
+
+void C45::set_feature_indeces(std::vector<int>* indeces){
+	this->feature_indeces = indeces;
+}
+
 
 
 

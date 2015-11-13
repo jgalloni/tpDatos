@@ -72,6 +72,12 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
 
 	print_test("Empty tree is a leaf", (*t1).is_leaf());
 
+	std::vector<int>* v1 = new std::vector<int>{ 0, 1, 2 };
+	print_test("New tree will check all features", (* (*t1).feature_indeces) == (*v1) );
+	std::vector<int>* v2 = new std::vector<int>{ 0};
+	(*t1).set_feature_indeces(v2);
+	print_test("Set tree will check set features", (*(*t1).feature_indeces) == (*v2));
+
 	C45* t2 = new C45(&homogeneous);
 	class_of_tree = t2->tree_class;
 	print_test("Category of homogeneous.csv set is 'OTHER OFFENSES'", class_of_tree.compare("OTHER OFFENSES") == 0);
@@ -102,13 +108,13 @@ void random_forest_test(std::vector<Crime*> crimes) {
 }
 
 int main(int argc, char** argv) {
-	std::vector<Crime*> train = readCsv("train.csv");
+	//std::vector<Crime*> train = readCsv("train.csv");
 	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
 	
-	reader_test(train);
+	//reader_test(train);
 	coordinate_tests();
 	c45_basic_tests(homogeneous);
 	c45_set_operation_test(homogeneous);
-	random_forest_test(train);
+	//random_forest_test(train);
    	return 0;
 }
