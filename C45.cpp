@@ -8,6 +8,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
+typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
+
 ////AUX FUNCTIONS
 
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
@@ -45,6 +47,24 @@ std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std:
 	return *subsets;
 }
 
+std::map<const std::string, std::vector<Crime*>*> split_by_category(std::vector<Crime*> set){
+	std::map<const std::string, std::vector<Crime*>*>* subsets = new std::map<const std::string, std::vector<Crime*>*>();
+	Crime* crime;
+	
+	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
+		crime = set[i];
+		std::string category = crime->category;
+		
+		if(subsets->count(category) == 0) {
+				(*subsets)[category] = new std::vector<Crime*>();
+		}
+		
+		(*subsets)[category]->push_back(crime);
+	}
+	
+	return *subsets;
+}
+
 int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
 	return subsets.size();
@@ -52,24 +72,40 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 
 //GAIN CALCULATION
 
-float info(std::vector<Crime*> set, int feature_index){
-		std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
-		float set_size = (float) set.size();
-		float freq; //absolute frequency of instance
-		float r_freq; //relative frequency of instance
-		float info = 0;
-		
-		typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
-		for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
-			// iterator->first = key
-			// iterator->second = value
-			freq = (float) (iterator->second)->size();
-			r_freq = freq / set_size ;
-			//printf("%f , %f \n", freq, r_freq);
-			info = info - r_freq * ( log2f(r_freq) );
-		}
-		
-		return info;
+float info(std::vector<Crime*> set){
+	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_category(set);
+	float set_size = (float) set.size();
+	float freq; //absolute frequency of instance
+	float r_freq; //relative frequency of instance
+	float info = 0;
+	
+	for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
+		freq = (float) (iterator->second)->size();
+		r_freq = freq / set_size ;
+		info = info - r_freq * ( log2f(r_freq) );
+	}
+	
+	return info;
+}
+
+float info_x(std::vector<Crime*> set, int feature_index){
+	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
+	float abs_t = set.size();
+	float abs_ti;
+	float info_x = 0;
+	std::vector<Crime*>* current_subset;
+	
+	for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
+		current_subset = iterator->second;
+		abs_ti = current_subset->size();
+		info_x = info_x + ( (abs_ti / abs_t) * info( *current_subset ) );
+	}
+	
+	return info_x;
+}
+
+float gain(std::vector<Crime*> set, int feature_index){
+	return info(set) - info_x(set, feature_index);
 }
 
 ////TEST FUNCTIONS

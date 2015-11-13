@@ -10,10 +10,11 @@
 #include <stddef.h>
 #include <iostream>
 
-
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
+
+typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
 void print_title(const char* test_title){
 	using namespace std;
@@ -93,25 +94,52 @@ void c45_set_operation_test(std::vector<Crime*> homogeneous) {
 	print_test("Homogeneous set has 1 subset by day of week (Wednesday)", subsets_by_feature(homogeneous, DAY_OF_WEEK) == 1);
 	print_test("Homogeneous set has 5 subsets by district", subsets_by_feature(homogeneous, DISTRICT) == 5);
 	print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADDRESS) == 3);
+	
+	std::map<const std::string, std::vector<Crime*>*> subs0 = split_by_discrete_feature(homogeneous, DAY_OF_WEEK);
+	std::map<const std::string, std::vector<Crime*>*> subs1 = split_by_discrete_feature(homogeneous, DISTRICT);
+	
+	print_test("Subset in single member maps are not empty", subs0["Wednesday"]->size() != 0);
+	print_test("Subset in single member map is as big as the original set", subs0["Wednesday"]->size() == homogeneous.size());
+	print_test("Subsets in mutiple member maps are not empty", subs1["NORTHERN"]->size() != 0);
+	unsigned int sum = 0;
+	
+	for(it_type iterator = subs1.begin(); iterator != subs1.end(); iterator++) {
+		sum = sum + (iterator->second)->size();
+	}
+	print_test("Sum of members of subsets is equal to members of original set", sum == homogeneous.size());
 }
 
-void c45_gain_calculation_test(std::vector<Crime*> homogeneous) {
+void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crime*> reduced) {
 		
 	print_title(" GAIN CALCULATION TEST ");
 	
-	float info0 = info(homogeneous, DAY_OF_WEEK);
-	float info1 = info(homogeneous, DISTRICT);
-	float info2 = info(homogeneous, ADDRESS);
+	float info0 = info(homogeneous);
+	float info1 = info(reduced);
+	float infox0 = info_x(reduced, DAY_OF_WEEK);
+	float infox1 = info_x(reduced, DISTRICT);
+	float infox2 = info_x(reduced, ADDRESS);
+	float gain0 = gain(reduced, DAY_OF_WEEK);
+	float gain1 = gain(reduced, DISTRICT);
+	float gain2 = gain(reduced, ADDRESS);
 	
 	//Checks back of envelope calculations for these values. Values are not checked exactly in the case of floats.
-	print_test("Info of homogeneous in day of week field is 0", info0 == 0);
-	print_test("Info of homogeneous in district field is greater than 0", info1 > 0);
-	print_test("Info of homogeneous in district field is greater than 2.2", info1 > 2.2);
-	print_test("Info of homogeneous in district field is less than 2.3", info1 < 2.3);
-	print_test("Info of homogeneous in address field is greater than 0", info2 > 0);
-	print_test("Info of homogeneous in address field is greater than 1.5", info2 > 1.5);
-	print_test("Info of homogeneous in address field is less than 1.6", info2 < 1.6);
-
+	print_test("Info of homogeneous is 0", info0 == 0);
+	print_test("Info of reduced is greater than 0", info1 > 0);
+	print_test("Info of reduced is greater than 2", info1 > 2);
+	print_test("Info of reduced is less than 2.1", info1 < 2.1);
+	print_test("Info of day of week partition is equal to original set", infox0 == info1);
+	print_test("Info of district partition is greater than 0", infox1 > 0);
+	print_test("Info of district partition is greater than 0.9", infox1 > 0.9);
+	print_test("Info of district partition is less than 1", infox1 < 1 );
+	print_test("Info of address partition is greater than 0", infox2 > 0);
+	print_test("Info of address partition is not less than 0", !(infox2 < 0));
+	print_test("Info of address partition is greater than ", infox2 > 1.15);
+	print_test("Info of address partition is less than", infox2 < 1.25);
+	print_test("Gain of partitioning by day of week is 0", gain0 == 0);
+	print_test("Gain of partitioning by district is greater than 1", gain1 > 1);
+	print_test("Gain of partitioning by district is less than 1.1", gain1 < 1.1);
+	print_test("Gain of partitioning by address is greater than 0.8", gain2 > 0.8);
+	print_test("Gain of partitioning by address is less than 0.9", gain2 < 0.9);
 }
 
 void random_forest_test(std::vector<Crime*> crimes) {
@@ -129,12 +157,13 @@ void random_forest_test(std::vector<Crime*> crimes) {
 int main(int argc, char** argv) {
 	std::vector<Crime*> train = readCsv("train.csv");
 	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
+	std::vector<Crime*> reduced = readCsv("reduced.csv");
 	
 	reader_test(train);
 	coordinate_tests();
 	c45_basic_tests(homogeneous);
 	c45_set_operation_test(homogeneous);
-	c45_gain_calculation_test(homogeneous);
+	c45_gain_calculation_test(homogeneous, reduced);
 	random_forest_test(train);
    	return 0;
 }
