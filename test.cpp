@@ -15,6 +15,7 @@
 #define DISTRICT 1
 #define ADDRESS 2
 #define DEFAULT_HIGHT 50
+#define MIN_DIVISIBLE 5
 
 typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
@@ -66,7 +67,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
 	print_title(" C45 TRIVIAL CHECKS ");
 	
 	std::vector<Crime*>* crimes = new std::vector<Crime*>();
-	C45* t1 = new C45(crimes, DEFAULT_HIGHT);
+	C45* t1 = new C45(crimes, DEFAULT_HIGHT, MIN_DIVISIBLE);
 
 	print_test("Empty tree test", t1);
 
@@ -81,7 +82,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
 	(*t1).set_feature_indeces(v2);
 	print_test("Set tree will check set features", (*(*t1).feature_indeces) == (*v2));
 
-	C45* t2 = new C45(&homogeneous, DEFAULT_HIGHT);
+	C45* t2 = new C45(&homogeneous, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	class_of_tree = t2->tree_class;
 	print_test("Category of homogeneous.csv set is 'OTHER OFFENSES'", class_of_tree.compare("OTHER OFFENSES") == 0);
 	print_test("Category of homogeneous.csv set is not 'CANDY'", class_of_tree.compare("CANDY") != 0);
@@ -161,7 +162,7 @@ void random_forest_test(std::vector<Crime*> crimes) {
 	print_test("Succesfully generates subset of size 50", sub1.size() == 50);
 	print_test("Previous subset not size 51", sub1.size() != 51);
 	
-	C45* t0 = new C45(&sub1, DEFAULT_HIGHT);
+	C45* t0 = new C45(&sub1, DEFAULT_HIGHT, 1);
 	
 	print_test("Creates tree with it", t0);
 	
@@ -186,22 +187,22 @@ void speed_test(std::vector<Crime*> crimes){
 	int end;
 	
 	start = clock();
-	t1 = new C45(&sub1, DEFAULT_HIGHT);
+	t1 = new C45(&sub1, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	end = clock();
 	std::cout << "Size 100 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
 	
 	start = clock();
-	t2 = new C45(&sub2, DEFAULT_HIGHT);
+	t2 = new C45(&sub2, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	end = clock();
 	std::cout << "Size 1000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
 	
 	start = clock();
-	t3 = new C45(&sub3, DEFAULT_HIGHT);
+	t3 = new C45(&sub3, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	end = clock();
 	std::cout << "Size 10000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
 	
 	start = clock();
-	t4 = new C45(&sub4, DEFAULT_HIGHT);
+	t4 = new C45(&sub4, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	end = clock();
 	std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
 

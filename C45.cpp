@@ -12,10 +12,39 @@ typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
 ////AUX FUNCTIONS
 
+std::string popular_crime(std::vector<Crime*>* crimes){
+	std::map<const std::string, int> pop_crimes = *(new std::map<const std::string, int>());
+	std::string current_crime;
+
+	for(std::vector<Crime*>::size_type i = 0; i != (*crimes).size(); ++i){
+		current_crime = (*crimes)[i]->category;
+		if(pop_crimes.count(current_crime) == 0){
+			pop_crimes[current_crime] = 1;
+		} else {
+			pop_crimes[current_crime] += 1;
+		}
+	}
+	
+	typedef std::map<const std::string, int>::iterator it_type;
+	it_type iterator = pop_crimes.begin();
+	std::string popular_crime = iterator->first;
+	int popularity = iterator->second;
+	for(; iterator != pop_crimes.end(); iterator++) {
+		if((iterator->second) > popularity){
+				popular_crime = iterator->first;
+				popularity = iterator->second;
+		}
+	}
+	
+	return popular_crime;
+}
+
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
-std::string class_of_tree(std::vector<Crime*>* crimes){
+std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	if((*crimes).size() == 0){
 		return "LARCENY/THEFT";	
+	} else if (crimes->size() < (unsigned int) min_divisible){
+		return popular_crime(crimes);
 	}
 	
 	std::string t_class = (*crimes)[0]->category;
@@ -23,13 +52,14 @@ std::string class_of_tree(std::vector<Crime*>* crimes){
 	    if ((*crimes)[i]->category != t_class) return "";
 	}
 
+	//printf("Hoja alcanzada\n");
+
 	return t_class;
 }
 
 //SET OPERATIONS
 
 std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std::vector<Crime*> set, int feature_index){
-	//ay caramba
 	std::map<const std::string, std::vector<Crime*>*>* subsets = new std::map<const std::string, std::vector<Crime*>*>();
 	Crime* crime;
 	
@@ -141,19 +171,18 @@ float gain_ratio(std::vector<Crime*> set, int feature_index){
 
 ////CLASS
 
-C45::C45(std::vector<Crime*>* crimes, int max_hight){
-	tree_class = class_of_tree(crimes);
+C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
+	tree_class = class_of_tree(crimes, min_divisible);
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
 	feature_indeces = new std::vector<int>{ 0, 1, 2 };
+	
+	//printf("Creando: altura %i, set de tamanio %i\n", max_hight, crimes->size());
 		
-	//Por la unica razon que se detiene es por max_hight, aun los arboles
-	//no se convierten en hojas cuando son de clase homogenea
-	//esto hacerlo en class_of_tree
 	if (tree_class.empty() && max_hight > 0) {
 		
 		int best_index = (*feature_indeces)[0];
-		float best_gain = gain_ratio(*crimes, best_index); //despues probar con gain simple y ver cual da mejor cross validation
+		float best_gain = gain(*crimes, best_index); //despues probar con gain simple y ver cual da mejor cross validation
 		std::map<const std::string, std::vector<Crime*>*> best_split = split_by_discrete_feature(*crimes, best_index);
 		
 		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
@@ -169,7 +198,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight){
 		
 		split_index = best_index;
 		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){
-				children[iterator->first] = new C45(iterator->second, max_hight - 1);
+				children[iterator->first] = new C45(iterator->second, max_hight - 1, min_divisible);
 		}
 		//Aca crear un arbol mas que sea una hoja con la categoria mas comun del padre
 	}
