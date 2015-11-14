@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <iostream>
+#include <time.h>
 
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
@@ -167,6 +168,50 @@ void random_forest_test(std::vector<Crime*> crimes) {
 
 }
 
+void speed_test(std::vector<Crime*> crimes){
+	
+	print_title(" SPEED TEST ");
+	
+	std::vector<Crime*> sub1 = generate_subset(crimes, 100);
+	std::vector<Crime*> sub2 = generate_subset(crimes, 1000);
+	std::vector<Crime*> sub3 = generate_subset(crimes, 10000);
+	std::vector<Crime*> sub4 = generate_subset(crimes, 100000);
+	
+	C45* t1;
+	C45* t2;
+	C45* t3;
+	C45* t4;
+	
+	int start;
+	int end;
+	
+	start = clock();
+	t1 = new C45(&sub1, DEFAULT_HIGHT);
+	end = clock();
+	std::cout << "Size 100 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
+	
+	start = clock();
+	t2 = new C45(&sub2, DEFAULT_HIGHT);
+	end = clock();
+	std::cout << "Size 1000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
+	
+	start = clock();
+	t3 = new C45(&sub3, DEFAULT_HIGHT);
+	end = clock();
+	std::cout << "Size 10000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
+	
+	start = clock();
+	t4 = new C45(&sub4, DEFAULT_HIGHT);
+	end = clock();
+	std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
+
+	//para suprimir warning de que las variables no se usan.
+	t1->is_leaf();
+	t2->is_leaf();
+	t3->is_leaf();
+	t4->is_leaf();
+}
+
 int main(int argc, char** argv) {
 	std::vector<Crime*> train = readCsv("train.csv");
 	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
@@ -178,5 +223,6 @@ int main(int argc, char** argv) {
 	c45_set_operation_test(homogeneous);
 	c45_gain_calculation_test(homogeneous, reduced);
 	random_forest_test(train);
+	//speed_test(train); //descomentar solo si interesa
    	return 0;
 }

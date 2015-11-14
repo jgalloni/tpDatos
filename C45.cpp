@@ -149,6 +149,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight){
 		
 	//Por la unica razon que se detiene es por max_hight, aun los arboles
 	//no se convierten en hojas cuando son de clase homogenea
+	//esto hacerlo en class_of_tree
 	if (tree_class.empty() && max_hight > 0) {
 		
 		int best_index = (*feature_indeces)[0];

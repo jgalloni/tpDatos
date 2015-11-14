@@ -36,3 +36,4 @@ TODO:
 + Filtro de datos ruidosos (datos que tienen coordenadas fuera de san francisco, por ejemplo).
 + Modulo de cross validation.
 + Leer el paper de Leo Breiman y hacer un resumen para que lo leamos los demas.
++ Hacerle una pasada al programa con valgrind.
