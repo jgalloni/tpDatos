@@ -20,11 +20,13 @@ float gain_ratio(std::vector<Crime*> set, int feature_index);
 
 class C45 {
 	public:
-		C45(std::vector<Crime*>* crimes);
+		C45(std::vector<Crime*>* crimes, int max_hight);
 
 		std::string tree_class;
-		std::vector<C45*>* children;
+		std::map<std::string, C45*> children;
 		std::vector<int>* feature_indeces;
+		int split_index;
+		
 		bool is_leaf();
 		void set_feature_indeces(std::vector<int>* indeces);
 };

@@ -26,3 +26,13 @@ La clase crimen, en lugar de tener quillicientos atributos de tipos diferentes t
 Proximos pasos:
 1) Implementar Crime para que se instancie con clase y coordenadas por parametro, y que internamente cree un vector de features para ir agregando. Los metodos a los que le cambie el nombre de set_x a load_x son metodos que tendrian que pasar el feature a un formato copado, meterlo en un feature y agregarlo al vector.
 2) Implementar algoritmo que tome el dataset y devuelva un sample con n filas y m columnas, ambos al azar (pero mantener la clase). Con eso le vamos a dar de comer a los arboles.
+
+__________________
+Marko 14.11.2015
+__________________
+
+TODO:
++ Filtro por distancia a centroides (aun no buscarlos).
++ Filtro de datos ruidosos (datos que tienen coordenadas fuera de san francisco, por ejemplo).
++ Modulo de cross validation.
++ Leer el paper de Leo Breiman y hacer un resumen para que lo leamos los demas.

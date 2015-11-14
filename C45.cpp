@@ -141,11 +141,37 @@ float gain_ratio(std::vector<Crime*> set, int feature_index){
 
 ////CLASS
 
-C45::C45(std::vector<Crime*>* crimes){
+C45::C45(std::vector<Crime*>* crimes, int max_hight){
 	tree_class = class_of_tree(crimes);
-	children = new std::vector<C45*>();
+	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
 	feature_indeces = new std::vector<int>{ 0, 1, 2 };
+		
+	//Por la unica razon que se detiene es por max_hight, aun los arboles
+	//no se convierten en hojas cuando son de clase homogenea
+	if (tree_class.empty() && max_hight > 0) {
+		
+		int best_index = (*feature_indeces)[0];
+		float best_gain = gain_ratio(*crimes, best_index); //despues probar con gain simple y ver cual da mejor cross validation
+		std::map<const std::string, std::vector<Crime*>*> best_split = split_by_discrete_feature(*crimes, best_index);
+		
+		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
+			float next_gain = gain_ratio(*crimes, (*feature_indeces)[next]);
+			if (next_gain > best_gain){
+			
+				best_gain = next_gain;
+				best_index = (*feature_indeces)[next];
+				best_split = split_by_discrete_feature(*crimes, best_index);
+			
+			} 
+		}
+		
+		split_index = best_index;
+		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){
+				children[iterator->first] = new C45(iterator->second, max_hight - 1);
+		}
+		//Aca crear un arbol mas que sea una hoja con la categoria mas comun del padre
+	}
 }
 
 bool C45::is_leaf(){

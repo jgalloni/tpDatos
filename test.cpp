@@ -13,6 +13,7 @@
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
+#define DEFAULT_HIGHT 50
 
 typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
@@ -64,7 +65,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
 	print_title(" C45 TRIVIAL CHECKS ");
 	
 	std::vector<Crime*>* crimes = new std::vector<Crime*>();
-	C45* t1 = new C45(crimes);
+	C45* t1 = new C45(crimes, DEFAULT_HIGHT);
 
 	print_test("Empty tree test", t1);
 
@@ -79,7 +80,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
 	(*t1).set_feature_indeces(v2);
 	print_test("Set tree will check set features", (*(*t1).feature_indeces) == (*v2));
 
-	C45* t2 = new C45(&homogeneous);
+	C45* t2 = new C45(&homogeneous, DEFAULT_HIGHT);
 	class_of_tree = t2->tree_class;
 	print_test("Category of homogeneous.csv set is 'OTHER OFFENSES'", class_of_tree.compare("OTHER OFFENSES") == 0);
 	print_test("Category of homogeneous.csv set is not 'CANDY'", class_of_tree.compare("CANDY") != 0);
@@ -158,6 +159,10 @@ void random_forest_test(std::vector<Crime*> crimes) {
 	
 	print_test("Succesfully generates subset of size 50", sub1.size() == 50);
 	print_test("Previous subset not size 51", sub1.size() != 51);
+	
+	C45* t0 = new C45(&sub1, DEFAULT_HIGHT);
+	
+	print_test("Creates tree with it", t0);
 	
 
 }
