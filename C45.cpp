@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
@@ -42,7 +45,7 @@ std::string popular_crime(std::vector<Crime*>* crimes){
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
 std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	if((*crimes).size() == 0){
-		return "LARCENY/THEFT";	
+		return "LARCENY/THEFTY"; //este typo es intencional, para diferenciar de las predicciones de robo que no vienen de aca
 	} else if (crimes->size() < (unsigned int) min_divisible){
 		return popular_crime(crimes);
 	}
@@ -169,10 +172,40 @@ float gain_ratio(std::vector<Crime*> set, int feature_index){
 }
 
 
+////PREDICTION
+
+Crime* make_prediction(C45 tree, Crime* crime){
+	
+	//posible optimizacion: anidar una funcion recursiva que busque solo el string
+	if(!tree.tree_class.empty()){
+		crime->category = tree.tree_class;
+	} else {
+		std::map<std::string, C45*> children = tree.children;
+		int split_index = tree.split_index;
+		std::string my_type = crime->features[split_index];
+		//cout << my_type <<endl;
+		if(children.count(my_type) == 0){
+			//printf("fui por other\n");
+			make_prediction( *(children["other"]), crime); 
+		} else {
+			//printf("fui por clase\n");
+			make_prediction( *(children[my_type]), crime);
+		}
+	}
+	
+	return crime;
+}
+
+
 ////CLASS
 
 C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	tree_class = class_of_tree(crimes, min_divisible);
+	
+	//if(!tree_class.empty()){
+	//	cout << "CLASS " << tree_class << " DEPTH " << max_hight << endl;
+	//}
+	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
 	feature_indeces = new std::vector<int>{ 0, 1, 2 };
@@ -196,11 +229,22 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 			} 
 		}
 		
+		//If no entropy reducing tests available then,
+		if(best_gain == 0){
+			tree_class = popular_crime(crimes);
+			return;
+		}
+		
+		//cout << "RAMIFICATION DEPTH " << max_hight << " WITH " << std::to_string(best_split.size()) << " CHILDREN" << endl;
+		
 		split_index = best_index;
 		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){
 				children[iterator->first] = new C45(iterator->second, max_hight - 1, min_divisible);
 		}
-		//Aca crear un arbol mas que sea una hoja con la categoria mas comun del padre
+		
+		std::string pop_crime = popular_crime(crimes);
+		children["other"] = new C45( new std::vector<Crime*>(), max_hight-1, min_divisible);
+		children["other"]->tree_class = pop_crime;
 	}
 }
 

@@ -31,5 +31,6 @@ class C45 {
 		void set_feature_indeces(std::vector<int>* indeces);
 };
 
+Crime* make_prediction(C45 tree, Crime* crime);
 
 #endif //C45_H

@@ -14,13 +14,13 @@
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
-#define DEFAULT_HIGHT 50
+#define DEFAULT_HIGHT 10
 #define MIN_DIVISIBLE 5
 
+using namespace std;
 typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 
 void print_title(const char* test_title){
-	using namespace std;
 	cout << "===================================" << endl;
 	cout << "~" << test_title << "~" << endl;
 	cout << "===================================" << endl;	
@@ -30,12 +30,13 @@ void print_test(const char* name, bool result) {
     printf("%s: %s\n", name, result? "OK" : "ERROR");
 }
 
-void reader_test(std::vector<Crime*> crimes) {
+void reader_test(std::vector<Crime*> crimes, std::vector<Crime*> predict) {
 	
 	print_title(" READER TEST ");
 	
-	print_test("There are 878049 registers in train set", crimes.size() == 878049);
+	print_test("There are more than 800000 registers in train set", crimes.size() > 800000);
 	print_test("There are not 87 registers in train set", crimes.size() != 87);
+	print_test("Predict set is not empty", predict.size() > 0);
 
 }
 
@@ -213,24 +214,57 @@ void speed_test(std::vector<Crime*> crimes){
 	t4->is_leaf();
 }
 
-std::vector<Crime*>* clusteringDataset(std::vector<Crime*>  crimes){
-	std::vector<Crime*> clusterCrimes[4];
+void clustering_dataset(std::vector<Crime*> crimes){
+	
+	print_title(" CLUSTERING DATA ");
+	
+	std::vector<Crime*> cluster_crimes[4];
 	for(Crime* crime:crimes){
 		if(crime->coordinate->x <= -122.43&&crime->coordinate->y < 37.7616)
-			clusterCrimes[0].push_back(crime);
+			cluster_crimes[0].push_back(crime);
 		else if(crime->coordinate->x > -122.43&&crime->coordinate->y <= 37.7616)
-			clusterCrimes[1].push_back(crime);
+			cluster_crimes[1].push_back(crime);
 		else if(crime->coordinate->x <= -122.43&&crime->coordinate->y > 37.7616)
-			clusterCrimes[2].push_back(crime);
+			cluster_crimes[2].push_back(crime);
 		else
-			clusterCrimes[3].push_back(crime);
+			cluster_crimes[3].push_back(crime);
 	}
-	std::cout<<clusterCrimes[0].size()<<" crimes in cluster 1"<<"\n";
-	std::cout<<clusterCrimes[1].size()<<" crimes in cluster 2"<<"\n";
-	std::cout<<clusterCrimes[2].size()<<" crimes in cluster 3"<<"\n";
-	std::cout<<clusterCrimes[3].size()<<" crimes in cluster 4"<<"\n";
-	std::cout<<"=============================================="<<"\n";
-	return clusterCrimes;
+	std::cout<<cluster_crimes[0].size()<<" crimes in cluster 1"<<"\n";
+	std::cout<<cluster_crimes[1].size()<<" crimes in cluster 2"<<"\n";
+	std::cout<<cluster_crimes[2].size()<<" crimes in cluster 3"<<"\n";
+	std::cout<<cluster_crimes[3].size()<<" crimes in cluster 4"<<"\n";
+	//return clusterCrimes; //por ahora lo dejo asi, total esta en el modulo de test (tiraba warning)
+}
+
+void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predict){
+	
+	print_title(" C45 CLASSIFICATION TEST ");
+	
+	std::vector<Crime*> sample0 = generate_subset(data, 10000);
+	std::vector<Crime*> sample1 = generate_subset(data, 10000);
+	
+	C45* t0 = new C45(&sample0, DEFAULT_HIGHT, MIN_DIVISIBLE);
+	C45* t1 = new C45(&sample1, DEFAULT_HIGHT, MIN_DIVISIBLE);
+	Crime* predict_this = predict[0];
+	
+	Crime* prediction0 = make_prediction(*t0, predict_this);
+	Crime* prediction1 = make_prediction(*t1, predict_this);
+	
+	print_test("Prediction succesfully made", !(prediction0->category).empty());
+	cout << "Prediction is: " << prediction0->category << endl;
+	
+	print_test("Same instance, another tree", !(prediction1->category).empty());
+	cout << "Prediction is: " << prediction1->category << endl;
+	
+	predict_this = predict[1000];
+	prediction0 = make_prediction(*t0, predict_this);
+	prediction1 = make_prediction(*t1, predict_this);
+	
+	print_test("Another instance, first tree", !(prediction0->category).empty());
+	cout << "Prediction is: " << prediction0->category << endl;
+	
+	print_test("Same instance, another tree", !(prediction1->category).empty());
+	cout << "Prediction is: " << prediction1->category << endl;
 }
 
 int main(int argc, char** argv) {
@@ -239,14 +273,15 @@ int main(int argc, char** argv) {
 	std::vector<Crime*> reduced = readCsv("reduced.csv");
 	std::vector<Crime*> predict = readCsv2("test.csv");
 
-	reader_test(train);
+	reader_test(train, predict);
 	coordinate_tests();
 	c45_basic_tests(homogeneous);
 	c45_set_operation_test(homogeneous);
 	c45_gain_calculation_test(homogeneous, reduced);
+	c45_classification_test(train, predict);
 	random_forest_test(train);
 	//speed_test(train); //descomentar solo si interesa
-	clusteringDataset(train);
+	clustering_dataset(train);
    	return 0;
 }
 

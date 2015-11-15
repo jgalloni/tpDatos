@@ -64,7 +64,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
 		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, &x, &y);
 		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution,resolution2, adress,x,y);
 		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, x, y);
-		if(atof(y)>50){ // evita los datos fuera de san fransisco
+		if(atof(y)>50){ // evita los datos fuera de san francisco
 			file_c.getline(line, 400);
 			continue;
 		}
