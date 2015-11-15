@@ -121,15 +121,15 @@ void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crim
 	
 	float info0 = info(homogeneous);
 	float info1 = info(reduced);
-	float infox0 = info_x(reduced, DAY_OF_WEEK);
-	float infox1 = info_x(reduced, DISTRICT);
-	float infox2 = info_x(reduced, ADDRESS);
-	float gain0 = gain(reduced, DAY_OF_WEEK);
-	float gain1 = gain(reduced, DISTRICT);
-	float gain2 = gain(reduced, ADDRESS);
-	float gainr0 = gain_ratio(reduced, DAY_OF_WEEK);
-	float gainr1 = gain_ratio(reduced, DISTRICT);
-	float gainr2 = gain_ratio(reduced, ADDRESS);
+	float infox0 = info_x(reduced, DAY_OF_WEEK, split_by_discrete_feature);
+	float infox1 = info_x(reduced, DISTRICT, split_by_discrete_feature);
+	float infox2 = info_x(reduced, ADDRESS, split_by_discrete_feature);
+	float gain0 = gain(reduced, DAY_OF_WEEK, split_by_discrete_feature);
+	float gain1 = gain(reduced, DISTRICT, split_by_discrete_feature);
+	float gain2 = gain(reduced, ADDRESS, split_by_discrete_feature);
+	float gainr0 = gain_ratio(reduced, DAY_OF_WEEK, split_by_discrete_feature);
+	float gainr1 = gain_ratio(reduced, DISTRICT, split_by_discrete_feature);
+	float gainr2 = gain_ratio(reduced, ADDRESS, split_by_discrete_feature);
 	
 	//Checks back of envelope calculations for these values. Values are not checked exactly in the case of floats.
 	print_test("Info of homogeneous is 0", info0 == 0);

@@ -21,7 +21,9 @@ float gain_ratio(std::vector<Crime*> set, int feature_index);
 class C45 {
 	public:
 		C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible);
-
+		
+		std::map<const std::string, std::vector<Crime*>*> (*test[1])(std::vector<Crime*> set, int feature_index);
+		
 		std::string tree_class;
 		std::map<std::string, C45*> children;
 		std::vector<int>* feature_indeces;

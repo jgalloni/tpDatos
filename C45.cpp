@@ -92,6 +92,9 @@ Crime* make_prediction(C45 tree, Crime* crime){
 C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	tree_class = class_of_tree(crimes, min_divisible);
 	
+	//test function initialization
+	test[0] = split_by_discrete_feature;
+	
 	//if(!tree_class.empty()){
 	//	cout << "CLASS " << tree_class << " DEPTH " << max_hight << endl;
 	//}
@@ -105,16 +108,16 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	if (tree_class.empty() && max_hight > 0) {
 		
 		int best_index = (*feature_indeces)[0];
-		float best_gain = gain(*crimes, best_index); //despues probar con gain simple y ver cual da mejor cross validation
-		std::map<const std::string, std::vector<Crime*>*> best_split = split_by_discrete_feature(*crimes, best_index);
+		float best_gain = gain_ratio(*crimes, best_index, test[0]); //despues probar con gain simple y ver cual da mejor cross validation
+		std::map<const std::string, std::vector<Crime*>*> best_split = (test[0])(*crimes, best_index);
 		
 		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
-			float next_gain = gain_ratio(*crimes, (*feature_indeces)[next]);
+			float next_gain = gain_ratio(*crimes, (*feature_indeces)[next], test[0]);
 			if (next_gain > best_gain){
 			
 				best_gain = next_gain;
 				best_index = (*feature_indeces)[next];
-				best_split = split_by_discrete_feature(*crimes, best_index);
+				best_split = (test[0])(*crimes, best_index);
 			
 			} 
 		}
