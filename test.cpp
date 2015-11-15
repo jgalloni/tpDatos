@@ -3,6 +3,8 @@
 #include "Coordinate.h"
 #include "Reader.h"
 #include "random_forest.h"
+#include "gain.h"
+#include "test_functions.h"
 #include <string>
 #include <vector>
 #include <stdio.h>
