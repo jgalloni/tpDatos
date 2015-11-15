@@ -213,11 +213,32 @@ void speed_test(std::vector<Crime*> crimes){
 	t4->is_leaf();
 }
 
+std::vector<Crime*>* clusteringDataset(std::vector<Crime*>  crimes){
+	std::vector<Crime*> clusterCrimes[4];
+	for(Crime* crime:crimes){
+		if(crime->coordinate->x <= -122.43&&crime->coordinate->y < 37.7616)
+			clusterCrimes[0].push_back(crime);
+		else if(crime->coordinate->x > -122.43&&crime->coordinate->y <= 37.7616)
+			clusterCrimes[1].push_back(crime);
+		else if(crime->coordinate->x <= -122.43&&crime->coordinate->y > 37.7616)
+			clusterCrimes[2].push_back(crime);
+		else
+			clusterCrimes[3].push_back(crime);
+	}
+	std::cout<<clusterCrimes[0].size()<<" crimes in cluster 1"<<"\n";
+	std::cout<<clusterCrimes[1].size()<<" crimes in cluster 2"<<"\n";
+	std::cout<<clusterCrimes[2].size()<<" crimes in cluster 3"<<"\n";
+	std::cout<<clusterCrimes[3].size()<<" crimes in cluster 4"<<"\n";
+	std::cout<<"=============================================="<<"\n";
+	return clusterCrimes;
+}
+
 int main(int argc, char** argv) {
 	std::vector<Crime*> train = readCsv("train.csv");
 	std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
 	std::vector<Crime*> reduced = readCsv("reduced.csv");
-	
+	std::vector<Crime*> predict = readCsv2("test.csv");
+
 	reader_test(train);
 	coordinate_tests();
 	c45_basic_tests(homogeneous);
@@ -225,5 +246,7 @@ int main(int argc, char** argv) {
 	c45_gain_calculation_test(homogeneous, reduced);
 	random_forest_test(train);
 	//speed_test(train); //descomentar solo si interesa
+	clusteringDataset(train);
    	return 0;
 }
+

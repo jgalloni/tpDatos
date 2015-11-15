@@ -20,6 +20,7 @@ class Crime {
 		Coordinate * coordinate;
 		struct tm date;
 		std::string category;
+		int id;
 		//std::string day_of_week;
 		//std::string district;
 		//std::string adress;

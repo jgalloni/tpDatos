@@ -12,5 +12,6 @@
 
 std::vector<Crime*> readCsv(std::string fileName);
 
+std::vector<Crime*> readCsv2(std::string fileName);
 
 #endif //TPDATOS_READER_H
