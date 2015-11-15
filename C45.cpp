@@ -45,7 +45,7 @@ std::string popular_crime(std::vector<Crime*>* crimes){
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
 std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	if((*crimes).size() == 0){
-		return "LARCENY/THEFT"; //este typo es intencional, para diferenciar de las predicciones de robo que no vienen de aca
+		return "LARCENY/THEFT";
 	} else if (crimes->size() < (unsigned int) min_divisible){
 		return popular_crime(crimes);
 	}
@@ -185,7 +185,7 @@ Crime* make_prediction(C45 tree, Crime* crime){
 		std::string my_type = crime->features[split_index];
 		//cout << my_type <<endl;
 		if(children.count(my_type) == 0){
-			//printf("fui por other\n");
+			printf("fui por other\n");
 			make_prediction( *(children["other"]), crime); 
 		} else {
 			//printf("fui por clase\n");

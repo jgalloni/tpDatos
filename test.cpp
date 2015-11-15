@@ -158,6 +158,7 @@ void random_forest_test(std::vector<Crime*> crimes) {
 	
 	print_title(" RANDOM FOREST TEST ");
 	
+	std::vector<Crime*> sub0 = generate_subset(crimes, 50);
 	std::vector<Crime*> sub1 = generate_subset(crimes, 50);
 	
 	print_test("Succesfully generates subset of size 50", sub1.size() == 50);
@@ -166,6 +167,15 @@ void random_forest_test(std::vector<Crime*> crimes) {
 	C45* t0 = new C45(&sub1, DEFAULT_HIGHT, 1);
 	
 	print_test("Creates tree with it", t0);
+	
+	bool different = false;
+	for(std::vector<Crime*>::size_type i = 0; i != sub0.size(); i++){
+		if(sub0[i] != sub1[i]){
+			different = true;
+			continue;
+		}
+	}
+	print_test("Two separately generated subsets of same size are different", different == true);
 	
 
 }
@@ -280,7 +290,7 @@ int main(int argc, char** argv) {
 	c45_gain_calculation_test(homogeneous, reduced);
 	c45_classification_test(train, predict);
 	random_forest_test(train);
-	//speed_test(train); //descomentar solo si interesa
+	speed_test(train);
 	clustering_dataset(train);
    	return 0;
 }
