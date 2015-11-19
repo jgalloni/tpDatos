@@ -262,21 +262,27 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
 	Crime* prediction0 = make_prediction(*t0, predict_this);
 	Crime* prediction1 = make_prediction(*t1, predict_this);
 	
-	print_test("Prediction succesfully made", !(prediction0->category).empty());
-	cout << "Prediction is: " << prediction0->category << endl;
+	//print_test("Prediction succesfully made", !(prediction0->category).empty());
+	//cout << "Prediction is: " << prediction0->category << endl;
+	print_test("Prediction succesfully made", !(prediction0->get_prediction()).empty());
+	cout << "Prediction is: " << prediction0->get_prediction() << endl;
 	
-	print_test("Same instance, another tree", !(prediction1->category).empty());
-	cout << "Prediction is: " << prediction1->category << endl;
+	//print_test("Same instance, another tree", !(prediction1->category).empty());
+	//cout << "Prediction is: " << prediction1->category << endl;
+
+	print_test("Same instance, another tree", !(prediction1->get_prediction()).empty());
+	cout << "Prediction is: " << prediction1->get_prediction() << endl;
 	
 	predict_this = predict[1000];
 	prediction0 = make_prediction(*t0, predict_this);
 	prediction1 = make_prediction(*t1, predict_this);
 	
-	print_test("Another instance, first tree", !(prediction0->category).empty());
-	cout << "Prediction is: " << prediction0->category << endl;
-	
-	print_test("Same instance, another tree", !(prediction1->category).empty());
-	cout << "Prediction is: " << prediction1->category << endl;
+	print_test("Another instance, first tree", !(prediction0->get_prediction()).empty());
+	cout << "Prediction is: " << prediction0->get_prediction() << endl;
+	//cout << prediction0->to_csv()<<endl;
+	print_test("Same instance, another tree", !(prediction1->get_prediction()).empty());
+	cout << "Prediction is: " << prediction1->get_prediction() << endl;
+	//cout << prediction1->to_csv()<<endl;
 }
 
 int main(int argc, char** argv) {

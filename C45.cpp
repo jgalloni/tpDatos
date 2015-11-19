@@ -68,7 +68,8 @@ Crime* make_prediction(C45 tree, Crime* crime){
 	
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
 	if(!tree.tree_class.empty()){
-		crime->category = tree.tree_class;
+		//crime->category = tree.tree_class;
+		crime->set_prediction(tree.tree_class);
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
