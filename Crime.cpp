@@ -58,10 +58,10 @@ Crime::Crime(Crime &crime){
 	this->features[1]=crime.features[1];
 	this->features[2]=crime.features[2];
 	this->features[3]=crime.features[3];
-	this->features[4]=crime.features[4];
-	this->features[5]=crime.features[5];
-	this->prediction_count=crime.prediction_count;
-	this->prediction=new std::map<std::string, int>(*(crime.prediction));
+	//this->features[4]=crime.features[4];
+	//this->features[5]=crime.features[5];
+	//this->prediction_count=crime.prediction_count;
+	//this->prediction=new std::map<std::string, int>(*(crime.prediction));
 }
 
 void Crime::set_category(char *category){
