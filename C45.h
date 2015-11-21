@@ -20,6 +20,7 @@ class C45 {
 		std::map<std::string, C45*> children;
 		std::vector<int>* feature_indeces;
 		int split_index;
+		std::map<const std::string, std::vector<Crime*>*> (*best_test)(std::vector<Crime*> set, int feature_index);
 		
 		bool is_leaf();
 		void set_feature_indeces(std::vector<int>* indeces);

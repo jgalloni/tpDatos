@@ -44,6 +44,14 @@ std::string popular_crime(std::vector<Crime*>* crimes){
 	return popular_crime;
 }
 
+std::string find_type(C45 tree, Crime* crime, int feature_index){
+	std::vector<Crime*>* input = new std::vector<Crime*>();
+	input->push_back(crime);
+	std::map<const std::string, std::vector<Crime*>*> hashed = (tree.best_test)( *input, feature_index);
+	it_type iterator = hashed.begin();
+	return (iterator->first);
+}
+
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
 std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	if((*crimes).size() == 0){
@@ -73,7 +81,7 @@ Crime* make_prediction(C45 tree, Crime* crime){
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
-		std::string my_type = crime->features[split_index];
+		std::string my_type = find_type(tree, crime, split_index); //crime->features[split_index];
 		//cout << my_type <<endl;
 		if(children.count(my_type) == 0){
 			printf("fui por other\n");
@@ -119,6 +127,8 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 			
 			} 
 		}
+		
+		best_test = test[0];
 		
 		//Search by location
 		
