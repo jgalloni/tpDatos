@@ -48,7 +48,7 @@ std::string find_type(C45 tree, Crime* crime, int feature_index){
 	std::vector<Crime*>* input = new std::vector<Crime*>();
 	input->push_back(crime);
 	std::map<const std::string, std::vector<Crime*>*> hashed = (tree.best_test)( *input, feature_index);
-	it_type iterator = hashed.begin();	
+	it_type iterator = hashed.begin();
 	return (iterator->first);
 	
 }
@@ -74,20 +74,15 @@ std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 ////PREDICTION
 
 Crime* make_prediction(C45 tree, Crime* crime){
-	//printf("pre{\n");
 	
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
-	//printf("bool: %d", tree.tree_class.empty());
 	if(!tree.tree_class.empty()){
-		printf("llego1\n");
 		crime->category = tree.tree_class;
-		printf("llego2\n");
 		//crime->set_prediction(tree.tree_class);
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
 		std::string my_type = find_type(tree, crime, split_index);
-		//cout << my_type <<endl;
 		if(children.count(my_type) == 0){
 			printf("fui por other\n");
 			make_prediction( *(children["other"]), crime); 
@@ -96,9 +91,7 @@ Crime* make_prediction(C45 tree, Crime* crime){
 			make_prediction( *(children[my_type]), crime);
 		}
 	}
-	
-	//printf("}diccion\n");
-	
+		
 	return crime;
 }
 
@@ -132,11 +125,14 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 				best_gain = next_gain;
 				best_index = (*feature_indeces)[next];
 				best_split = (discrete_test[0])(*crimes, best_index);
-				best_test = discrete_test[0];
+				
 			
 			} 
 		}
-				
+		
+		best_test = discrete_test[0];
+		
+		
 		//Search by location
 		
 		next_gain = gain_ratio(*crimes, location_test[0]);
@@ -144,8 +140,9 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 				best_gain = next_gain;
 				best_split = (location_test[0])(*crimes, 0);
 				best_test = location_test[0];
-				best_index = -1;			
+				best_index = -1;	
 		} 
+		
 			
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){
@@ -163,6 +160,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		std::string pop_crime = popular_crime(crimes);
 		children["other"] = new C45( new std::vector<Crime*>(), max_hight-1, min_divisible);
 		children["other"]->tree_class = pop_crime;
+		
 	}
 }
 
