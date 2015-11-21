@@ -226,9 +226,9 @@ void speed_test(std::vector<Crime*> crimes){
 	t4->is_leaf();
 }
 
-void clustering_dataset(std::vector<Crime*> crimes){
+void location_test(std::vector<Crime*> crimes){
 	
-	print_title(" CLUSTERING DATA ");
+	print_title(" LOCATION TEST ");
 	
 	std::vector<Crime*> cluster_crimes[4];
 	for(Crime* crime:crimes){
@@ -301,7 +301,8 @@ int main(int argc, char** argv) {
 	c45_classification_test(train, predict);
 	random_forest_test(train);
 	speed_test(train);
-	clustering_dataset(train);
+	//location_test(train); //obsoleto
+	
    	return 0;
 }
 

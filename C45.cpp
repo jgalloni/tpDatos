@@ -48,8 +48,9 @@ std::string find_type(C45 tree, Crime* crime, int feature_index){
 	std::vector<Crime*>* input = new std::vector<Crime*>();
 	input->push_back(crime);
 	std::map<const std::string, std::vector<Crime*>*> hashed = (tree.best_test)( *input, feature_index);
-	it_type iterator = hashed.begin();
+	it_type iterator = hashed.begin();	
 	return (iterator->first);
+	
 }
 
 //De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
@@ -73,15 +74,19 @@ std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 ////PREDICTION
 
 Crime* make_prediction(C45 tree, Crime* crime){
+	//printf("pre{\n");
 	
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
+	//printf("bool: %d", tree.tree_class.empty());
 	if(!tree.tree_class.empty()){
+		printf("llego1\n");
 		crime->category = tree.tree_class;
+		printf("llego2\n");
 		//crime->set_prediction(tree.tree_class);
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
-		std::string my_type = find_type(tree, crime, split_index); //crime->features[split_index];
+		std::string my_type = find_type(tree, crime, split_index);
 		//cout << my_type <<endl;
 		if(children.count(my_type) == 0){
 			printf("fui por other\n");
@@ -91,6 +96,8 @@ Crime* make_prediction(C45 tree, Crime* crime){
 			make_prediction( *(children[my_type]), crime);
 		}
 	}
+	
+	//printf("}diccion\n");
 	
 	return crime;
 }
@@ -102,7 +109,8 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	tree_class = class_of_tree(crimes, min_divisible);
 	
 	//test function initialization
-	test[0] = split_by_discrete_feature;
+	discrete_test[0] = split_by_discrete_feature;
+	location_test[0] = split_in_quadrants;
 	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
@@ -113,33 +121,38 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		
 		//Search by descrete feature
 		int best_index = (*feature_indeces)[0];
-		float best_gain = gain_ratio(*crimes, test[0], best_index);
+		float best_gain = gain_ratio(*crimes, discrete_test[0], best_index);
 		float next_gain;
-		std::map<const std::string, std::vector<Crime*>*> best_split = (test[0])(*crimes, best_index);
+		std::map<const std::string, std::vector<Crime*>*> best_split = (discrete_test[0])(*crimes, best_index);
 		
 		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
-			next_gain = gain_ratio(*crimes, test[0], (*feature_indeces)[next]);
+			next_gain = gain_ratio(*crimes, discrete_test[0], (*feature_indeces)[next]);
 			if (next_gain > best_gain){
 			
 				best_gain = next_gain;
 				best_index = (*feature_indeces)[next];
-				best_split = (test[0])(*crimes, best_index);
+				best_split = (discrete_test[0])(*crimes, best_index);
+				best_test = discrete_test[0];
 			
 			} 
 		}
-		
-		best_test = test[0];
-		
+				
 		//Search by location
 		
-		//next_gain = gain_ratio(*crimes, 
-		
+		next_gain = gain_ratio(*crimes, location_test[0]);
+		if (next_gain > best_gain){
+				best_gain = next_gain;
+				best_split = (location_test[0])(*crimes, 0);
+				best_test = location_test[0];
+				best_index = -1;			
+		} 
+			
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){
 			tree_class = popular_crime(crimes);
 			return;
 		}
-		
+				
 		//Children spawning
 		split_index = best_index;
 		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){

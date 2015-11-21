@@ -50,8 +50,33 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 	return subsets.size();
 }
 
-std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector<Crime*> set){
+std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector<Crime*> set, int feature_index = 0){
+	std::map<const std::string, std::vector<Crime*>*>* split = new std::map<const std::string, std::vector<Crime*>*>();
+	std::string quadrant;
+	Crime* crime;
+	
+	//printf("size %i\n", set.size());
+	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
 		
+		crime = set[i];
+		
+		if(crime->coordinate->x <= -122.43&&crime->coordinate->y < 37.7616)
+			quadrant = "Q1";
+		else if(crime->coordinate->x > -122.43&&crime->coordinate->y <= 37.7616)
+			quadrant = "Q2";
+		else if(crime->coordinate->x <= -122.43&&crime->coordinate->y > 37.7616)
+			quadrant = "Q3";
+		else
+			quadrant = "Q4";
+			
+		if(split->count(quadrant) == 0) {
+				(*split)[quadrant] = new std::vector<Crime*>();
+		}
+				
+		(*split)[quadrant]->push_back(crime);
+	}
+	
+	return *split;
 }
 
 

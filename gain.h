@@ -15,6 +15,6 @@ float info(std::vector<Crime*> set);
 float info_x(std::vector<Crime*> set, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int feature_index);
 std::vector<float> split_info(std::vector<Crime*> set, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int feature_index);
 float gain(std::vector<Crime*> set, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int feature_index);
-float gain_ratio(std::vector<Crime*> set, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int feature_index);
+float gain_ratio(std::vector<Crime*> set, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int feature_index = 0);
 
 #endif //GAIN_H
