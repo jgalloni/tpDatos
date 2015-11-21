@@ -103,12 +103,14 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {
 		
+		//Search by descrete feature
 		int best_index = (*feature_indeces)[0];
-		float best_gain = gain_ratio(*crimes, best_index, test[0]);
+		float best_gain = gain_ratio(*crimes, test[0], best_index);
+		float next_gain;
 		std::map<const std::string, std::vector<Crime*>*> best_split = (test[0])(*crimes, best_index);
 		
 		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
-			float next_gain = gain_ratio(*crimes, (*feature_indeces)[next], test[0]);
+			next_gain = gain_ratio(*crimes, test[0], (*feature_indeces)[next]);
 			if (next_gain > best_gain){
 			
 				best_gain = next_gain;
@@ -117,6 +119,10 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 			
 			} 
 		}
+		
+		//Search by location
+		
+		//next_gain = gain_ratio(*crimes, 
 		
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){

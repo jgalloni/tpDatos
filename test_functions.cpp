@@ -50,4 +50,8 @@ int subsets_by_feature(std::vector<Crime*> set, int feature_index){
 	return subsets.size();
 }
 
+std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector<Crime*> set){
+		
+}
+
 
