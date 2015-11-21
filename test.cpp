@@ -38,7 +38,7 @@ void reader_test(std::vector<Crime*> crimes, std::vector<Crime*> predict) {
 	
 	print_test("There are more than 800000 registers in train set", crimes.size() > 800000);
 	print_test("There are not 87 registers in train set", crimes.size() != 87);
-	//print_test("Predict set is not empty", predict.size() > 0);
+	print_test("Predict set is not empty", predict.size() > 0);
 
 }
 
@@ -258,9 +258,7 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
 	C45* t0 = new C45(&sample0, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	C45* t1 = new C45(&sample1, DEFAULT_HIGHT, MIN_DIVISIBLE);
 	Crime* predict_this = predict[0];
-	
-	printf("llegue\n");
-	
+		
 	Crime* prediction0 = make_prediction(*t0, predict_this);
 	Crime* prediction1 = make_prediction(*t1, predict_this);
 	

@@ -96,20 +96,15 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	//test function initialization
 	test[0] = split_by_discrete_feature;
 	
-	//if(!tree_class.empty()){
-	//	cout << "CLASS " << tree_class << " DEPTH " << max_hight << endl;
-	//}
-	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
 	feature_indeces = new std::vector<int>{ 0, 1, 2 };
 	
-	//printf("Creando: altura %i, set de tamanio %i\n", max_hight, crimes->size());
-		
+	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {
 		
 		int best_index = (*feature_indeces)[0];
-		float best_gain = gain_ratio(*crimes, best_index, test[0]); //despues probar con gain simple y ver cual da mejor cross validation
+		float best_gain = gain_ratio(*crimes, best_index, test[0]);
 		std::map<const std::string, std::vector<Crime*>*> best_split = (test[0])(*crimes, best_index);
 		
 		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
@@ -129,13 +124,13 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 			return;
 		}
 		
-		//cout << "RAMIFICATION DEPTH " << max_hight << " WITH " << std::to_string(best_split.size()) << " CHILDREN" << endl;
-		
+		//Children spawning
 		split_index = best_index;
 		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){
 				children[iterator->first] = new C45(iterator->second, max_hight - 1, min_divisible);
 		}
 		
+		//Criteria: if instance type was not available in the train set, then the prediction is the most common category at this point.
 		std::string pop_crime = popular_crime(crimes);
 		children["other"] = new C45( new std::vector<Crime*>(), max_hight-1, min_divisible);
 		children["other"]->tree_class = pop_crime;
