@@ -66,8 +66,6 @@ std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	    if ((*crimes)[i]->category != t_class) return "";
 	}
 
-	//printf("Hoja alcanzada\n");
-
 	return t_class;
 }
 
@@ -84,10 +82,8 @@ Crime* make_prediction(C45 tree, Crime* crime){
 		int split_index = tree.split_index;
 		std::string my_type = find_type(tree, crime, split_index);
 		if(children.count(my_type) == 0){
-			printf("fui por other\n");
 			make_prediction( *(children["other"]), crime); 
 		} else {
-			//printf("fui por clase\n");
 			make_prediction( *(children[my_type]), crime);
 		}
 	}

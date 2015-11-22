@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "Crime.h"
 #include "C45.h"
-#include "Feature.h"
 
 #include  <random>
 #include  <iterator>

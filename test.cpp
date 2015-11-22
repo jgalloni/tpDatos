@@ -232,38 +232,11 @@ void speed_test(std::vector<Crime*> crimes){
     end = clock();
     std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
-    
-    
-    
-    
-    
     //para suprimir warning de que las variables no se usan.
     t1->is_leaf();
     t2->is_leaf();
     t3->is_leaf();
     t4->is_leaf();
-}
-
-void clustering_dataset(std::vector<Crime*> crimes){
-    
-    print_title(" CLUSTERING DATA ");
-    
-    std::vector<Crime*> cluster_crimes[4];
-    for(Crime* crime:crimes){
-        if(crime->coordinate->x <= -122.43&&crime->coordinate->y < 37.7616)
-            cluster_crimes[0].push_back(crime);
-        else if(crime->coordinate->x > -122.43&&crime->coordinate->y <= 37.7616)
-            cluster_crimes[1].push_back(crime);
-        else if(crime->coordinate->x <= -122.43&&crime->coordinate->y > 37.7616)
-            cluster_crimes[2].push_back(crime);
-        else
-            cluster_crimes[3].push_back(crime);
-    }
-    std::cout<<cluster_crimes[0].size()<<" crimes in cluster 1"<<"\n";
-    std::cout<<cluster_crimes[1].size()<<" crimes in cluster 2"<<"\n";
-    std::cout<<cluster_crimes[2].size()<<" crimes in cluster 3"<<"\n";
-    std::cout<<cluster_crimes[3].size()<<" crimes in cluster 4"<<"\n";
-    //return clusterCrimes; //por ahora lo dejo asi, total esta en el modulo de test (tiraba warning)
 }
 
 void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predict){
@@ -282,14 +255,9 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     
     print_test("Prediction succesfully made", !(prediction0->category).empty());
     cout << "Prediction is: " << prediction0->category << endl;
-    //print_test("Prediction succesfully made", !(prediction0->get_prediction()).empty());
-    //cout << "Prediction is: " << prediction0->get_prediction() << endl;
     
     print_test("Same instance, another tree", !(prediction1->category).empty());
     cout << "Prediction is: " << prediction1->category << endl;
-    
-    //print_test("Same instance, another tree", !(prediction1->get_prediction()).empty());
-    //cout << "Prediction is: " << prediction1->get_prediction() << endl;
     
     predict_this = predict[1000];
     prediction0 = make_prediction(*t0, predict_this);
@@ -298,10 +266,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     
     print_test("Another instance, first tree", !(prediction0->category).empty());
     cout << "Prediction is: " << prediction0->category << endl;
-    //cout << prediction0->to_csv()<<endl;
     print_test("Same instance, another tree", !(prediction1->category).empty());
     cout << "Prediction is: " << prediction1->category << endl;
-    //cout << prediction1->to_csv()<<endl;
     
     
     
@@ -322,7 +288,6 @@ int main(int argc, char** argv) {
     c45_classification_test(train, predict);
     random_forest_test(train);
     speed_test(train);
-    clustering_dataset(train);
    	return 0;
 }
 

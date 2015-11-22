@@ -28,15 +28,11 @@ std::vector<Crime*> readCsv(std::string fileName) {
     std::ifstream file_c;
 	file_c.open(fileName);
     
-//     char line[300];
-//     char district[30],date[30],category[30],desc[30],day[30];
-//     char resolution[30];
-//     char adress[30];
 	char line[400];
 	char district[60], date[60], category[60], desc[100], day[60];
 	char resolution[60];
 	//char resolution2[60];
-	char adress[60];
+	char address[60];
 	//float x, y;
 	char x[60];
 	char y[60];
@@ -61,22 +57,20 @@ std::vector<Crime*> readCsv(std::string fileName) {
 	
 	while (!file_c.eof()) {
 		check_quotemarks(line);
-		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, &x, &y);
-		//sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution,resolution2, adress,x,y);
-		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, adress, x, y);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, address, x, y);
 		if(atof(y)>50){ // evita los datos fuera de san francisco
 			file_c.getline(line, 400);
 			continue;
 		}
 		crime = new Crime(atof(x),atof(y));
         crime->load_district(district);
-        crime->load_adress(adress);
+        crime->load_address(address);
         crime->load_day_of_week(day);
         crime->set_category(category);
         tm tm1;
         sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
-        crime->load_date(tm1);
+        //crime->load_date(tm1);
         crimes.push_back(crime);
 		file_c.getline(line, 400);
 
@@ -113,9 +107,7 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 	std::cout<<"Reading file:"<<fileName<<"\n";
 	char line[400];
 	char district[60], date[60], day[60],id[60];
-	//char resolution2[60];
-	char adress[60];
-	//float x, y;
+	char address[60];
 	char x[60];
 	char y[60];
 
@@ -130,20 +122,20 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 	}
 
 	while (!file_c.eof()) {
-		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", id, date, day, district, adress, x, y);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", id, date, day, district, address, x, y);
 		if(atof(y)>50){ // evita los datos fuera de san fransisco
 			file_c.getline(line, 400);
 			continue;
 		}
 		crime = new Crime(atof(x),atof(y));
 		crime->load_district(district);
-		crime->load_adress(adress);
+		crime->load_address(address);
 		crime->load_day_of_week(day);
 		crime->id=atoi(id);
 		tm tm1;
 		sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
 			   &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
-		crime->load_date(tm1);
+		//crime->load_date(tm1);
 		crimes.push_back(crime);
 		file_c.getline(line, 400);
 
@@ -151,4 +143,5 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 	file_c.close();
 	std::cout<< crimes.size()<<" registers have been read."<<"\n";
 
+	return crimes;
 }
