@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define DISCRETE_TESTS 1
+#define DISCRETE_TESTS 2
 #define LOCATION_TESTS 1
 
+std::string popular_crime(std::vector<Crime*>* crimes);
 std::string class_of_tree(std::vector<Crime*>* crimes);
 
 class C45 {

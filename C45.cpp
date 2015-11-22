@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <iostream>
 
+#define DISCRETE_TESTS 2
+#define LOCATION_TESTS 1
+
 using namespace std;
 
 typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
@@ -99,6 +102,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	
 	//test function initialization
 	discrete_test[0] = split_by_discrete_feature;
+	discrete_test[1] = split_biggest_set;
 	location_test[0] = split_in_quadrants;
 	
 	children = *(new std::map<std::string, C45*>());
@@ -109,24 +113,27 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	if (tree_class.empty() && max_hight > 0) {
 		
 		//Search by descrete feature
+		best_test = discrete_test[0];
 		int best_index = (*feature_indeces)[0];
 		float best_gain = gain_ratio(*crimes, discrete_test[0], best_index);
 		float next_gain;
 		std::map<const std::string, std::vector<Crime*>*> best_split = (discrete_test[0])(*crimes, best_index);
 		
-		for (unsigned int next = 1; next != feature_indeces->size() ; next++){
-			next_gain = gain_ratio(*crimes, discrete_test[0], (*feature_indeces)[next]);
-			if (next_gain > best_gain){
-			
-				best_gain = next_gain;
-				best_index = (*feature_indeces)[next];
-				best_split = (discrete_test[0])(*crimes, best_index);
+		for (int i = 0; i != DISCRETE_TESTS; i++){
+			for (unsigned int next = 0; next != feature_indeces->size() ; next++){
+				if(i == 0 && next == 0) continue;
+				next_gain = gain_ratio(*crimes, discrete_test[i], (*feature_indeces)[next]);
+				if (next_gain > best_gain){
 				
-			
-			} 
+					best_gain = next_gain;
+					best_index = (*feature_indeces)[next];
+					best_split = (discrete_test[i])(*crimes, best_index);
+					best_test = discrete_test[i];
+				
+				} 
+			}
 		}
 		
-		best_test = discrete_test[0];
 		
 		
 		//Search by location
