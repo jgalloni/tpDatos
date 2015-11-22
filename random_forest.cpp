@@ -8,6 +8,8 @@
 #include  <random>
 #include  <iterator>
 
+#define DEFAULT_HEIGHT 10
+#define MIN_DIVISIBLE 5
 
 //Las dos primeras funciones son claramente sacadas de internet. Luis habia dicho algo sobre eso no? Me parece que no se podia.
 template<typename Iter, typename RandomGenerator>
@@ -34,4 +36,18 @@ std::vector<Crime*> generate_subset(std::vector<Crime*> set, int subset_size){
 
 	return (*subset);
 }
+
+
+std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subset_size){
+    std::vector<Crime*> subset = *new std::vector<Crime*>();
+    C45* new_tree;
+    std::vector<C45*>* trees = new std::vector<C45*>();
+    for (int i=0; i<n_trees; i++) {
+        subset = generate_subset(set, subset_size);
+        new_tree = new C45(&subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+        (*trees).push_back(new_tree);
+    }
+    return (*trees);
+}
+
 
