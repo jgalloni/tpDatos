@@ -4,6 +4,7 @@
 #include "Crime.h"
 #include "C45.h"
 
+
 #include  <random>
 #include  <iterator>
 
@@ -38,6 +39,7 @@ std::vector<Crime*> generate_subset(std::vector<Crime*> set, int subset_size){
 
 
 std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subset_size){
+    //por ahi podemos hacer que en vez de subset size le pasemos un porcentaje 0-1
     std::vector<Crime*> subset = *new std::vector<Crime*>();
     C45* new_tree;
     std::vector<C45*>* trees = new std::vector<C45*>();
@@ -47,6 +49,43 @@ std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subse
         (*trees).push_back(new_tree);
     }
     return (*trees);
+}
+
+std::map<unsigned int, std::string> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
+    // por ahora que devuelva un map con strings en cada id, despues vemos si lo hacemos void y
+    // que output directamente o que.
+    std::map<unsigned int, std::string> resultados = *(new std::map<unsigned int, std::string>());
+    unsigned currentMax;
+    std::string most_voted_category;
+    std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
+    Crime* prediction;
+    Crime* to_predict;
+    for (int i=0; i<predict_these.size(); i++) {
+        to_predict = predict_these[i];
+        
+        for (int j=0; j<trees.size(); j++) {
+            //llena un map con los votos para cada categoria de los arboles
+            prediction = make_prediction(*trees[j], to_predict);
+            if (tree_votes.count(prediction->category) != 0){
+                tree_votes[prediction->category]++;
+            }else{
+                tree_votes[prediction->category] = 1;
+            }
+        }
+        currentMax = 0;
+        //busca la categoria mas votada
+        for(auto it = tree_votes.begin(); it != tree_votes.end(); ++it ){
+            if (it ->second > currentMax) {
+                most_voted_category = it->first;
+                currentMax = it->second; 
+            }
+        }
+        //cuarda en la pos id del crimen la categoria mas votada
+        resultados[to_predict->id] = most_voted_category;
+        
+    }
+    return (resultados);
+    
 }
 
 

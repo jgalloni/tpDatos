@@ -158,7 +158,7 @@ void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crim
     print_test("Gain ratio of partitioning by address is less than 0.9", gainr2 < 0.3);
 }
 
-void random_forest_test(std::vector<Crime*> crimes) {
+void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict) {
     
     print_title(" RANDOM FOREST TEST ");
     
@@ -188,6 +188,19 @@ void random_forest_test(std::vector<Crime*> crimes) {
     std::vector<C45*> fifty_trees = generate_trees(crimes, 50, 100);
     
     print_test("Sucesfully creates 50 trees", fifty_trees.size() == 50);
+    
+    std::vector<Crime*> one_crime = generate_subset(predict, 1);
+    
+    std::map<unsigned int, std::string> results = make_predictions(fifty_trees,one_crime);
+    
+    print_test("Sucesfully creates map with one result from 50 trees", results.size() == 1);
+    
+    
+    unsigned int crime_id = one_crime[0]->id;
+    std::string prediction = results[crime_id];
+    
+    cout << "Prediction was: " << prediction << endl;
+    cout << "Id was: " << crime_id << endl;
     
     
     
@@ -286,7 +299,7 @@ int main(int argc, char** argv) {
     c45_set_operation_test(homogeneous);
     c45_gain_calculation_test(homogeneous, reduced);
     c45_classification_test(train, predict);
-    random_forest_test(train);
+    random_forest_test(train,predict);
     speed_test(train);
    	return 0;
 }
