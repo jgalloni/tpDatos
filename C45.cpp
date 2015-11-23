@@ -12,7 +12,7 @@
 #include <iostream>
 
 #define DISCRETE_TESTS 2
-#define LOCATION_TESTS 1
+#define LOCATION_TESTS 3
 
 using namespace std;
 
@@ -99,11 +99,13 @@ Crime* make_prediction(C45 tree, Crime* crime){
 
 C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 	tree_class = class_of_tree(crimes, min_divisible);
-	
+		
 	//test function initialization
 	discrete_test[0] = split_by_discrete_feature;
 	discrete_test[1] = split_biggest_set;
 	location_test[0] = split_in_quadrants;
+	location_test[1] = split_in_3_clusters;
+	location_test[2] = split_in_4_clusters;
 	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
@@ -120,6 +122,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		std::map<const std::string, std::vector<Crime*>*> best_split = (discrete_test[0])(*crimes, best_index);
 		
 		for (int i = 0; i != DISCRETE_TESTS; i++){
+			//usa la funcion dos veces por vuelta. Se podra optimizar?
 			for (unsigned int next = 0; next != feature_indeces->size() ; next++){
 				if(i == 0 && next == 0) continue;
 				next_gain = gain_ratio(*crimes, discrete_test[i], (*feature_indeces)[next]);
@@ -138,14 +141,15 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		
 		//Search by location
 		
-		next_gain = gain_ratio(*crimes, location_test[0]);
-		if (next_gain > best_gain){
-				best_gain = next_gain;
-				best_split = (location_test[0])(*crimes, 0);
-				best_test = location_test[0];
-				best_index = -1;	
-		} 
-		
+		for(int i = 0; i != LOCATION_TESTS; i++){
+			next_gain = gain_ratio(*crimes, location_test[i]);
+			if (next_gain > best_gain){
+					best_gain = next_gain;
+					best_split = (location_test[i])(*crimes, 0);
+					best_test = location_test[i];
+					best_index = -1;	
+			} 
+		}
 			
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){
@@ -165,6 +169,9 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		children["other"]->tree_class = pop_crime;
 		
 	}
+	
+	//al menos le hace delete a los crimenes
+	crimes->clear();
 }
 
 bool C45::is_leaf(){

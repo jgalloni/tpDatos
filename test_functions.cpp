@@ -86,6 +86,89 @@ std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector
 	return *split;
 }
 
+std::map<const std::string, std::vector<Crime*>*> split_in_3_clusters(std::vector<Crime*> set, int feature_index = 0){
+	//funcion menos generica del universo
+	std::map<const std::string, std::vector<Crime*>*>* split = new std::map<const std::string, std::vector<Crime*>*>();
+	std::string cluster;
+	Coordinate* c1 = new Coordinate(-122.4099, 37.73587);
+	Coordinate* c2 = new Coordinate(-122.4152, 37.78174);
+	Coordinate* c3 = new Coordinate(-122.4701, 37.7534);
+	Crime* crime;
+	float norm;
+	float next_norm;
+	
+	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
+		
+		crime = set[i];
+			
+		norm = crime->coordinate->sqnorm(c1);
+		cluster = "c1";
+		next_norm = crime->coordinate->sqnorm(c2);
+		if(next_norm < norm){
+				norm = next_norm;
+				cluster = "c2";
+		}
+		next_norm = crime->coordinate->sqnorm(c3);
+		if(next_norm < norm){
+				norm = next_norm;
+				cluster = "c3";
+		}	
+			
+		if(split->count(cluster) == 0) {
+				(*split)[cluster] = new std::vector<Crime*>();
+		}
+				
+		(*split)[cluster]->push_back(crime);
+	}
+	
+	return *split;
+}
+
+
+std::map<const std::string, std::vector<Crime*>*> split_in_4_clusters(std::vector<Crime*> set, int feature_index = 0){
+	//esta ademas esta duplicada
+	std::map<const std::string, std::vector<Crime*>*>* split = new std::map<const std::string, std::vector<Crime*>*>();
+	std::string cluster;
+	Coordinate* c1 = new Coordinate(-122.4096, 37.78474);
+	Coordinate* c2 = new Coordinate(-122.4758, 37.74653);
+	Coordinate* c3 = new Coordinate(-122.4335, 37.77281);
+	Coordinate* c4 = new Coordinate(-122.4089, 37.73512);
+	Crime* crime;
+	float norm;
+	float next_norm;
+	
+	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
+		
+		crime = set[i];
+			
+		norm = crime->coordinate->sqnorm(c1);
+		cluster = "c1";
+		next_norm = crime->coordinate->sqnorm(c2);
+		if(next_norm < norm){
+				norm = next_norm;
+				cluster = "c2";
+		}
+		next_norm = crime->coordinate->sqnorm(c3);
+		if(next_norm < norm){
+				norm = next_norm;
+				cluster = "c3";
+		}	
+		next_norm = crime->coordinate->sqnorm(c4);
+		if(next_norm < norm){
+				norm = next_norm;
+				cluster = "c4";
+		}	
+			
+		if(split->count(cluster) == 0) {
+				(*split)[cluster] = new std::vector<Crime*>();
+		}
+				
+		(*split)[cluster]->push_back(crime);
+	}
+	
+	return *split;
+}
+
 //OTHER SET OPERATIONS
 
 std::map<const std::string, std::vector<Crime*>*> split_by_category(std::vector<Crime*> set){
