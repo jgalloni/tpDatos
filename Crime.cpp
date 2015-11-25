@@ -9,14 +9,14 @@ Crime::Crime(float x, float y){
 	this->coordinate = coordinate;
 }
 
-Crime::Crime(Crime &crime){
-	this->coordinate = new Coordinate(crime.coordinate->x,crime.coordinate->y);
-	this->features[0]=crime.features[0];
-	this->category=crime.category;
-	this->date=crime.date;
-	this->features[1]=crime.features[1];
-	this->features[2]=crime.features[2];
-}
+//Crime::Crime(Crime &crime){
+//	this->coordinate = new Coordinate(crime.coordinate->x,crime.coordinate->y);
+//	this->features[0]=crime.features[0];
+//	this->category=crime.category;
+//	this->date=crime.date;
+//	this->features[1]=crime.features[1];
+//	this->features[2]=crime.features[2];
+//}
 
 void Crime::set_category(char *category){
 	this->category = std::string(category);

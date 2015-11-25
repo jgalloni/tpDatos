@@ -123,10 +123,7 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 
 	while (!file_c.eof()) {
 		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", id, date, day, district, address, x, y);
-		if(atof(y)>50){ // evita los datos fuera de san fransisco
-			file_c.getline(line, 400);
-			continue;
-		}
+
 		crime = new Crime(atof(x),atof(y));
 		crime->load_district(district);
 		crime->load_address(address);
