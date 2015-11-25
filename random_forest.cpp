@@ -3,10 +3,16 @@
 #include <stdlib.h>
 #include "Crime.h"
 #include "C45.h"
-
-
 #include  <random>
 #include  <iterator>
+
+
+//esto despues se saca
+#include <iostream>
+#include <fstream>
+
+
+
 
 #define DEFAULT_HEIGHT 10
 #define MIN_DIVISIBLE 5
@@ -47,14 +53,19 @@ std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subse
         subset = generate_subset(set, subset_size);
         new_tree = new C45(&subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
         (*trees).push_back(new_tree);
+//        if (i%10==0 || i== n_trees-1){
+//            std::cout << "van " << i << " arboles\n" << std::endl;
+//        }
     }
     return (*trees);
 }
 
-std::map<unsigned int, std::string> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
+std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
     // por ahora que devuelva un map con strings en cada id, despues vemos si lo hacemos void y
     // que output directamente o que.
-    std::map<unsigned int, std::string> resultados = *(new std::map<unsigned int, std::string>());
+    
+    
+    std::map<int, std::string> results = *(new std::map<int, std::string>());
     unsigned currentMax;
     std::string most_voted_category;
     std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
@@ -71,7 +82,12 @@ std::map<unsigned int, std::string> make_predictions(std::vector<C45*> trees, st
             }else{
                 tree_votes[prediction->category] = 1;
             }
+            
+            
         }
+//        if (i%20000==0){
+//            std::cout << "van " << i << " crimenes\n" << std::endl;
+//        }
         currentMax = 0;
         //busca la categoria mas votada
         for(auto it = tree_votes.begin(); it != tree_votes.end(); ++it ){
@@ -81,11 +97,52 @@ std::map<unsigned int, std::string> make_predictions(std::vector<C45*> trees, st
             }
         }
         //cuarda en la pos id del crimen la categoria mas votada
-        resultados[to_predict->id] = most_voted_category;
-        
+        results[to_predict->id] = most_voted_category;
+        tree_votes.clear();
+    
     }
-    return (resultados);
+    
+    
+    return (results);
     
 }
+
+
+void output_predictions(std::map<int, std::string> results){
+    int number_of_categories = 39;
+    const std::string categories[] = {"ARSON","ASSAULT","BAD CHECKS","BRIBERY","BURGLARY","DISORDERLY CONDUCT","DRIVING UNDER THE INFLUENCE","DRUG/NARCOTIC","DRUNKENNESS","EMBEZZLEMENT","EXTORTION","FAMILY OFFENSES","FORGERY/COUNTERFEITING","FRAUD","GAMBLING","KIDNAPPING","LARCENY/THEFT","LIQUOR LAWS","LOITERING","MISSING PERSON","NON-CRIMINAL","OTHER OFFENSES","PORNOGRAPHY/OBSCENE MAT","PROSTITUTION","RECOVERED VEHICLE","ROBBERY","RUNAWAY","SECONDARY CODES","SEX OFFENSES FORCIBLE","SEX OFFENSES NON FORCIBLE","STOLEN PROPERTY","SUICIDE","SUSPICIOUS OCC","TREA","TRESPASS","VANDALISM","VEHICLE THEFT","WARRANTS","WEAPON LAWS"};
+    
+    std::map<std::string, int> categories_indeces = *(new std::map<std::string,int>());
+    for (int i=0; i<number_of_categories; i++) {
+        categories_indeces[categories[i]] = i;
+    }
+    
+    
+    
+    std::ofstream myfile;
+    myfile.open ("predictions.csv");
+    myfile << "Id,ARSON,ASSAULT,BAD CHECKS,BRIBERY,BURGLARY,DISORDERLY CONDUCT,DRIVING UNDER THE INFLUENCE,DRUG/NARCOTIC,DRUNKENNESS,EMBEZZLEMENT,EXTORTION,FAMILY OFFENSES,FORGERY/COUNTERFEITING,FRAUD,GAMBLING,KIDNAPPING,LARCENY/THEFT,LIQUOR LAWS,LOITERING,MISSING PERSON,NON-CRIMINAL,OTHER OFFENSES,PORNOGRAPHY/OBSCENE MAT,PROSTITUTION,RECOVERED VEHICLE,ROBBERY,RUNAWAY,SECONDARY CODES,SEX OFFENSES FORCIBLE,SEX OFFENSES NON FORCIBLE,STOLEN PROPERTY,SUICIDE,SUSPICIOUS OCC,TREA,TRESPASS,VANDALISM,VEHICLE THEFT,WARRANTS,WEAPON LAWS\n";
+    
+    
+    for(auto it = results.begin(); it != results.end(); ++it ){
+        myfile << std::to_string(it->first);
+        int index_of_category = categories_indeces[it->second];
+       // unsigned int index_of_category = categories_indeces["WEAPON LAWS"]; esto queda para los tests del writer
+        for (int i=0; i<index_of_category; i++) {
+            myfile << ",0";
+        }
+        myfile << ",1";
+        for (int i =index_of_category+1; i<number_of_categories; i++) {
+            myfile << ",0";
+        }
+        myfile << "\n";
+
+        
+    }
+    
+    myfile.close();
+}
+
+
 
 

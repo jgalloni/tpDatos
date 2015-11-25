@@ -191,12 +191,12 @@ void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict)
     
     std::vector<Crime*> one_crime = generate_subset(predict, 1);
     
-    std::map<unsigned int, std::string> results = make_predictions(fifty_trees,one_crime);
+    std::map<int, std::string> results = make_predictions(fifty_trees,one_crime);
     
     print_test("Sucesfully creates map with one result from 50 trees", results.size() == 1);
     
     
-    unsigned int crime_id = one_crime[0]->id;
+    int crime_id = one_crime[0]->id;
     std::string prediction = results[crime_id];
     
     cout << "Prediction was: " << prediction << endl;
