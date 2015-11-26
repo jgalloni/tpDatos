@@ -16,7 +16,7 @@ std::string class_of_tree(std::vector<Crime*>* crimes);
 
 class C45 {
 	public:
-		C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible);
+		C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool location_assigned = false);
 		
 		std::map<const std::string, std::vector<Crime*>*> (*discrete_test[DISCRETE_TESTS])(std::vector<Crime*> set, int feature_index);
 		std::map<const std::string, std::vector<Crime*>*> (*location_test[LOCATION_TESTS])(std::vector<Crime*> set, int feature_index);

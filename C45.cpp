@@ -97,7 +97,7 @@ Crime* make_prediction(C45 tree, Crime* crime){
 
 ////CLASS
 
-C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
+C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool location_assigned){
 	tree_class = class_of_tree(crimes, min_divisible);
 		
 	//test function initialization
@@ -141,16 +141,21 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		
 		//Search by location
 		
-		for(int i = 0; i != LOCATION_TESTS; i++){
-			next_gain = gain_ratio(*crimes, location_test[i]);
-			if (next_gain > best_gain){
-					best_gain = next_gain;
-					best_split = (location_test[i])(*crimes, 0);
-					best_test = location_test[i];
-					best_index = -1;	
-			} 
+		bool location_branch = location_assigned;
+		if(location_assigned == false){
+			for(int i = 0; i != LOCATION_TESTS; i++){
+				next_gain = gain_ratio(*crimes, location_test[i]);
+				if (next_gain > best_gain){
+						best_gain = next_gain;
+						best_split = (location_test[i])(*crimes, 0);
+						best_test = location_test[i];
+						best_index = -1;
+						location_branch = true;
+						
+				} 
+			}
 		}
-			
+		
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){
 			tree_class = popular_crime(crimes);
@@ -160,7 +165,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible){
 		//Children spawning
 		split_index = best_index;
 		for(it_type iterator = best_split.begin(); iterator != best_split.end(); iterator++){
-				children[iterator->first] = new C45(iterator->second, max_hight - 1, min_divisible);
+				children[iterator->first] = new C45(iterator->second, max_hight - 1, min_divisible, location_branch);
 		}
 		
 		//Criteria: if instance type was not available in the train set, then the prediction is the most common category at this point.
