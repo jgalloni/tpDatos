@@ -3,20 +3,13 @@
 //
 
 #include "Crime.h"
+#include <iostream>
+using namespace std;
 
 Crime::Crime(float x, float y){
 	Coordinate* coordinate = new Coordinate(x,y);
 	this->coordinate = coordinate;
 }
-
-//Crime::Crime(Crime &crime){
-//	this->coordinate = new Coordinate(crime.coordinate->x,crime.coordinate->y);
-//	this->features[0]=crime.features[0];
-//	this->category=crime.category;
-//	this->date=crime.date;
-//	this->features[1]=crime.features[1];
-//	this->features[2]=crime.features[2];
-//}
 
 void Crime::set_category(char *category){
 	this->category = std::string(category);
@@ -30,6 +23,7 @@ void Crime::load_date(const tm &date) {
 }
 
 std::string Crime::get_month(){
+	//cout << "mes:" << date.tm_mon << endl;
 	switch (date.tm_mon){
 		case 1:
 			return "January";

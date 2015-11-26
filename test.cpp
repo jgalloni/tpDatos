@@ -18,6 +18,9 @@
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
+#define HOLYDAY 3
+#define MOMENT_OF_DAY 4
+#define MONTH 5
 #define DEFAULT_HEIGHT 10
 #define MIN_DIVISIBLE 5
 
@@ -256,8 +259,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     
     print_title(" C45 CLASSIFICATION TEST ");
     
-    std::vector<Crime*> sample0 = generate_subset(data, 10000);
-    std::vector<Crime*> sample1 = generate_subset(data, 10000);
+    std::vector<Crime*> sample0 = generate_subset(data, 1000);
+    std::vector<Crime*> sample1 = generate_subset(data, 1000);
     
     C45* t0 = new C45(&sample0, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     C45* t1 = new C45(&sample1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
@@ -287,6 +290,38 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     
 }
 
+void single_gain_test(std::vector<Crime*> data, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int index, std::string test_name){
+	//esto en el futuro hay que convertirlo en un promedio de muchos calculos
+	std::vector<Crime*> set1 = generate_subset(data, 50);
+	std::vector<Crime*> set2 = generate_subset(data, 100);
+	std::vector<Crime*> set3 = generate_subset(data, 1000);
+
+	float gain1 = gain_ratio(set1, split, index);
+	float gain2 = gain_ratio(set2, split, index);
+	float gain3 = gain_ratio(set3, split, index);
+	
+	cout << test_name << ", set size 50: " << gain1 << endl;
+	cout << test_name << ", set size 100: " << gain2 << endl;
+	cout << test_name << ", set size 1000: " << gain3 << endl;
+	
+}
+
+void feature_analysis(std::vector<Crime*> data){
+	print_title(" GAIN RATIO RESULTS ");
+	
+	single_gain_test(data, split_by_discrete_feature, DAY_OF_WEEK, "DayOfWeek");
+	single_gain_test(data, split_by_discrete_feature, DISTRICT, "District");
+	single_gain_test(data, split_by_discrete_feature, ADDRESS, "Address");
+	single_gain_test(data, split_by_discrete_feature, HOLYDAY, "Holyday");
+	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
+	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
+	single_gain_test(data, split_in_3_clusters, 0, "Location 3 clusters");
+	single_gain_test(data, split_in_4_clusters, 0, "Location 4 clusters");
+	single_gain_test(data, split_in_quadrants, 0, "Location 4 quadrants");
+	
+
+}
+
 int main(int argc, char** argv) {
     std::vector<Crime*> train = readCsv("train.csv");
     std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
@@ -301,6 +336,8 @@ int main(int argc, char** argv) {
     c45_classification_test(train, predict);
     random_forest_test(train,predict);
     speed_test(train);
+    feature_analysis(train);
+    
    	return 0;
 }
 

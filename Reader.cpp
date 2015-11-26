@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace std;
+
 void check_quotemarks(char* line){
 	int quotemarks = 0;
 	for (int i = 0; i < 300; i++)
@@ -68,9 +70,9 @@ std::vector<Crime*> readCsv(std::string fileName) {
         crime->load_day_of_week(day);
         crime->set_category(category);
         tm tm1;
-        sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
+        sscanf(date,"%4d - %2d - %2d %2d : %2d : %2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
-        //crime->load_date(tm1);
+        crime->load_date(tm1);
         crimes.push_back(crime);
 		file_c.getline(line, 400);
 
@@ -88,7 +90,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
 			minimoY=atof(y);
     }
     file_c.close();
-    std::cout<< crimes.size()<<" registers have been read."<<"\n";
+    cout<< crimes.size()<<" registers have been read."<< endl;
 
 	/*std::cout<< "borde inferrio izquierdo: " << minimoX<<","<<minimoY<<"\n";
 	std::cout<< "borde inferrio derecho: " << maximoX<<","<<minimoY<<"\n";
@@ -132,7 +134,7 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 		tm tm1;
 		sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
 			   &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
-		//crime->load_date(tm1);
+		crime->load_date(tm1);
 		crimes.push_back(crime);
 		file_c.getline(line, 400);
 

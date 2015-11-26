@@ -11,7 +11,7 @@
 #include "Coordinate.h"
 #include <algorithm>
 
-#define N_FEATURES 3
+#define N_FEATURES 6
 
 class Crime {
 
@@ -27,7 +27,7 @@ class Crime {
 		int id;
 		int prediction_count;
 		std::map<std::string, int> *prediction;
-		std::string features[N_FEATURES];//day,district,address
+		std::string features[N_FEATURES];
 		void set_category(char *category);
 		void load_date(const tm &date);
 		void load_day_of_week(char *day_of_Week);

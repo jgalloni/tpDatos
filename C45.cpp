@@ -79,14 +79,16 @@ Crime* make_prediction(C45 tree, Crime* crime){
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
 	if(!tree.tree_class.empty()){
 		crime->category = tree.tree_class;
-		//crime->set_prediction(tree.tree_class);
+		//cout << "clasificado como " << tree.tree_class << endl;
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
 		std::string my_type = find_type(tree, crime, split_index);
 		if(children.count(my_type) == 0){
+			//cout << "entre por other" << endl;
 			make_prediction( *(children["other"]), crime); 
 		} else {
+			//cout << "entre por " << my_type << endl;
 			make_prediction( *(children[my_type]), crime);
 		}
 	}
@@ -109,7 +111,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
-	feature_indeces = new std::vector<int>{ 0, 1, 2 };
+	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5 };
 	
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {
@@ -117,6 +119,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		//Search by descrete feature
 		best_test = discrete_test[0];
 		int best_index = (*feature_indeces)[0];
+		int next_index;
 		float best_gain = gain_ratio(*crimes, discrete_test[0], best_index);
 		float next_gain;
 		std::map<const std::string, std::vector<Crime*>*> best_split = (discrete_test[0])(*crimes, best_index);
@@ -125,19 +128,17 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 			//usa la funcion dos veces por vuelta. Se podra optimizar?
 			for (unsigned int next = 0; next != feature_indeces->size() ; next++){
 				if(i == 0 && next == 0) continue;
-				next_gain = gain_ratio(*crimes, discrete_test[i], (*feature_indeces)[next]);
+				next_index = (*feature_indeces)[next];
+				next_gain = gain_ratio(*crimes, discrete_test[i], next_index);
 				if (next_gain > best_gain){
-				
 					best_gain = next_gain;
-					best_index = (*feature_indeces)[next];
+					best_index = next_index;
 					best_split = (discrete_test[i])(*crimes, best_index);
 					best_test = discrete_test[i];
 				
 				} 
 			}
 		}
-		
-		
 		
 		//Search by location
 		
