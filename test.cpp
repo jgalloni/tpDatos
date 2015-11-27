@@ -21,6 +21,7 @@
 #define HOLYDAY 3
 #define MOMENT_OF_DAY 4
 #define MONTH 5
+#define HOUR 6
 #define DEFAULT_HEIGHT 10
 #define MIN_DIVISIBLE 5
 
@@ -315,6 +316,7 @@ void feature_analysis(std::vector<Crime*> data){
 	single_gain_test(data, split_by_discrete_feature, HOLYDAY, "Holyday");
 	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
 	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
+	single_gain_test(data, split_by_discrete_feature, HOUR, "Hour");
 	//single_gain_test(data, split_biggest_set, DAY_OF_WEEK, "DayOfWeek (biggest set)");
 	//single_gain_test(data, split_biggest_set, DISTRICT, "District (biggest set)");
 	//single_gain_test(data, split_biggest_set, ADDRESS, "Address (biggest set)");

@@ -110,7 +110,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
-	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5 };
+	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5, 6 };
 	
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {

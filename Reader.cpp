@@ -72,6 +72,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
         tm tm1;
         sscanf(date,"%4d - %2d - %2d %2d : %2d : %2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
+        //cout << "year: " << tm1.tm_year << " month: " << tm1.tm_mon << " hour: " << tm1.tm_hour << " min: " << tm1.tm_min << " sec: " << tm1.tm_sec <<endl;
         crime->load_date(tm1);
         crimes.push_back(crime);
 		file_c.getline(line, 400);

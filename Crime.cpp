@@ -20,10 +20,10 @@ void Crime::load_date(const tm &date) {
 	set_holiday();
 	set_moment_of_the_day();
 	this->features[5]=get_month();
+	this->features[6]=get_hour();
 }
 
 std::string Crime::get_month(){
-	//cout << "mes:" << date.tm_mon << endl;
 	switch (date.tm_mon){
 		case 1:
 			return "January";
@@ -51,6 +51,10 @@ std::string Crime::get_month(){
 			return "December";
 	}
 	return "";
+}
+
+std::string Crime::get_hour(){
+	return std::to_string(date.tm_hour);
 }
 
 void Crime::set_holiday(){
@@ -187,19 +191,4 @@ void Crime::load_address(char *address) {
 void Crime::set_coordinate(float x, float y) {
 	Coordinate * coordinate = new Coordinate(x,y);
 	this->coordinate = coordinate;
-}
-
-void Crime::set_prediction(std::string category){
-	this->prediction->at(category)+=1;
-	prediction_count++;
-}
-
-
-bool pred(const std::pair<std::string, int>& lhs,const std::pair<std::string, int>& rhs)
-{
-	return lhs.second < rhs.second;
-}
-
-std::string Crime::get_prediction() {
-	return std::max_element((*this->prediction).begin(), (*this->prediction).end(), pred)->first;
 }
