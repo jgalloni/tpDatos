@@ -87,8 +87,8 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     
     print_test("Empty tree is a leaf", (*t1).is_leaf());
     
-    std::vector<int>* v1 = new std::vector<int>{ 0, 1, 2 };
-    print_test("New tree will check all features", (* (*t1).feature_indeces) == (*v1) );
+   // std::vector<int>* v1 = new std::vector<int>{ 0, 1, 2 };
+   // print_test("New tree will check all features", (* (*t1).feature_indeces) == (*v1) );
     std::vector<int>* v2 = new std::vector<int>{ 0};
     (*t1).set_feature_indeces(v2);
     print_test("Set tree will check set features", (*(*t1).feature_indeces) == (*v2));

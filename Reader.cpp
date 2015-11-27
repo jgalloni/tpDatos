@@ -30,7 +30,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
     std::ifstream file_c;
 	file_c.open(fileName);
     
-	char line[400];
+	char line[400] = {0};
 	char district[60], date[60], category[60], desc[100], day[60];
 	char resolution[60];
 	//char resolution2[60];
