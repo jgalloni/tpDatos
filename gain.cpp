@@ -50,9 +50,7 @@ std::vector<float> split_info(std::vector<Crime*> set, std::map<const std::strin
 	float info_x = 0;
 	float split_info = 0;
 	std::vector<Crime*>* current_subset;
-	
-	std::map<std::vector<Crime*>*, bool> unique = *(new std::map<std::vector<Crime*>*, bool>());
-	
+		
 	for(it_type iterator = subsets.begin(); iterator != subsets.end(); iterator++) {
 		current_subset = iterator->second;
 		abs_ti = current_subset->size();
