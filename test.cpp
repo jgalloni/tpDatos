@@ -315,6 +315,12 @@ void feature_analysis(std::vector<Crime*> data){
 	single_gain_test(data, split_by_discrete_feature, HOLYDAY, "Holyday");
 	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
 	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
+	//single_gain_test(data, split_biggest_set, DAY_OF_WEEK, "DayOfWeek (biggest set)");
+	//single_gain_test(data, split_biggest_set, DISTRICT, "District (biggest set)");
+	//single_gain_test(data, split_biggest_set, ADDRESS, "Address (biggest set)");
+	//single_gain_test(data, split_biggest_set, HOLYDAY, "Holyday (biggest set)");
+	//single_gain_test(data, split_biggest_set, MOMENT_OF_DAY, "MomentOfDay (biggest set)");
+	//single_gain_test(data, split_biggest_set, MONTH, "Month (biggest set)");
 	single_gain_test(data, split_in_3_clusters, 0, "Location 3 clusters");
 	single_gain_test(data, split_in_4_clusters, 0, "Location 4 clusters");
 	single_gain_test(data, split_in_quadrants, 0, "Location 4 quadrants");

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define DISCRETE_TESTS 2
+#define DISCRETE_TESTS 1
 #define LOCATION_TESTS 3
 
 std::string popular_crime(std::vector<Crime*>* crimes);

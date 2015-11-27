@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#define DISCRETE_TESTS 2
+#define DISCRETE_TESTS 1
 #define LOCATION_TESTS 3
 
 using namespace std;
@@ -104,7 +104,6 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		
 	//test function initialization
 	discrete_test[0] = split_by_discrete_feature;
-	discrete_test[1] = split_biggest_set;
 	location_test[0] = split_in_quadrants;
 	location_test[1] = split_in_3_clusters;
 	location_test[2] = split_in_4_clusters;

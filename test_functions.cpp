@@ -31,6 +31,7 @@ std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std:
 	return *subsets;
 }
 
+/*
 std::map<const std::string, std::vector<Crime*>*> split_biggest_set(std::vector<Crime*> set, int feature_index){
 	//En vez de dividir n valores en n subsets, separa el subset mas grande
 	std::map<const std::string, std::vector<Crime*>*>* subsets = new std::map<const std::string, std::vector<Crime*>*>();
@@ -55,6 +56,7 @@ std::map<const std::string, std::vector<Crime*>*> split_biggest_set(std::vector<
 	
 	return *subsets;
 }
+*/
 
 //LOCATION FUNCTIONS
 
