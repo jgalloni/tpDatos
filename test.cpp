@@ -22,6 +22,8 @@
 #define MOMENT_OF_DAY 4
 #define MONTH 5
 #define HOUR 6
+#define SEASON 7
+#define ENDS_MEET 8
 #define DEFAULT_HEIGHT 10
 #define MIN_DIVISIBLE 5
 
@@ -267,24 +269,24 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     C45* t1 = new C45(&sample1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     Crime* predict_this = predict[0];
     
-    Crime* prediction0 = make_prediction(*t0, predict_this);
-    Crime* prediction1 = make_prediction(*t1, predict_this);
+    std::string prediction0 = make_prediction(*t0, predict_this);
+    std::string prediction1 = make_prediction(*t1, predict_this);
     
-    print_test("Prediction succesfully made", !(prediction0->category).empty());
-    cout << "Prediction is: " << prediction0->category << endl;
+    print_test("Prediction succesfully made", !prediction0.empty());
+    cout << "Prediction is: " << prediction0 << endl;
     
-    print_test("Same instance, another tree", !(prediction1->category).empty());
-    cout << "Prediction is: " << prediction1->category << endl;
+    print_test("Same instance, another tree", !prediction1.empty());
+    cout << "Prediction is: " << prediction1 << endl;
     
     predict_this = predict[1000];
     prediction0 = make_prediction(*t0, predict_this);
     prediction1 = make_prediction(*t1, predict_this);
     
     
-    print_test("Another instance, first tree", !(prediction0->category).empty());
-    cout << "Prediction is: " << prediction0->category << endl;
-    print_test("Same instance, another tree", !(prediction1->category).empty());
-    cout << "Prediction is: " << prediction1->category << endl;
+    print_test("Another instance, first tree", !prediction0.empty());
+    cout << "Prediction is: " << prediction0 << endl;
+    print_test("Same instance, another tree", !prediction1.empty());
+    cout << "Prediction is: " << prediction1 << endl;
     
     
     
@@ -317,12 +319,8 @@ void feature_analysis(std::vector<Crime*> data){
 	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
 	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
 	single_gain_test(data, split_by_discrete_feature, HOUR, "Hour");
-	//single_gain_test(data, split_biggest_set, DAY_OF_WEEK, "DayOfWeek (biggest set)");
-	//single_gain_test(data, split_biggest_set, DISTRICT, "District (biggest set)");
-	//single_gain_test(data, split_biggest_set, ADDRESS, "Address (biggest set)");
-	//single_gain_test(data, split_biggest_set, HOLYDAY, "Holyday (biggest set)");
-	//single_gain_test(data, split_biggest_set, MOMENT_OF_DAY, "MomentOfDay (biggest set)");
-	//single_gain_test(data, split_biggest_set, MONTH, "Month (biggest set)");
+	single_gain_test(data, split_by_discrete_feature, SEASON, "Season");
+	single_gain_test(data, split_by_discrete_feature, ENDS_MEET, "Ends meet");
 	single_gain_test(data, split_in_3_clusters, 0, "Location 3 clusters");
 	single_gain_test(data, split_in_4_clusters, 0, "Location 4 clusters");
 	single_gain_test(data, split_in_quadrants, 0, "Location 4 quadrants");

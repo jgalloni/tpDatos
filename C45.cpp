@@ -74,7 +74,7 @@ std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 
 ////PREDICTION
 
-Crime* make_prediction(C45 tree, Crime* crime){
+std::string make_prediction(C45 tree, Crime* crime){
 	
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
 	if(!tree.tree_class.empty()){
@@ -93,7 +93,7 @@ Crime* make_prediction(C45 tree, Crime* crime){
 		}
 	}
 		
-	return crime;
+	return (crime->category);
 }
 
 
@@ -110,7 +110,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 	
 	children = *(new std::map<std::string, C45*>());
 	//lo hago empezar con todas las features
-	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5, 6 };
+	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {

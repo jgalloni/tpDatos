@@ -69,7 +69,7 @@ std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector
     unsigned currentMax;
     std::string most_voted_category;
     std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
-    Crime* prediction;
+    std::string prediction;
     Crime* to_predict;
     for (int i=0; i<predict_these.size(); i++) {
         to_predict = predict_these[i];
@@ -77,10 +77,10 @@ std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector
         for (int j=0; j<trees.size(); j++) {
             //llena un map con los votos para cada categoria de los arboles
             prediction = make_prediction(*trees[j], to_predict);
-            if (tree_votes.count(prediction->category) != 0){
-                tree_votes[prediction->category]++;
+            if (tree_votes.count(prediction) != 0){
+                tree_votes[prediction]++;
             }else{
-                tree_votes[prediction->category] = 1;
+                tree_votes[prediction] = 1;
             }
             
             

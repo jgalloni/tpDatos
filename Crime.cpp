@@ -21,6 +21,22 @@ void Crime::load_date(const tm &date) {
 	set_moment_of_the_day();
 	this->features[5]=get_month();
 	this->features[6]=get_hour();
+	this->features[7]=get_season();
+	this->features[8]=ends_meet();
+}
+
+std::string Crime::get_season(){
+	int month = date.tm_mon;
+	if(month >= 3 && month <= 5) return "Spring";
+	else if (month >= 6 && month <= 8) return "Summer";
+	else if (month >= 9 && month <= 11) return "Autumn";
+	else return "Winter";
+}
+
+std::string Crime::ends_meet(){
+	int day = date.tm_mday;
+	if (day >= 20) return "+";
+	else return "-";
 }
 
 std::string Crime::get_month(){
