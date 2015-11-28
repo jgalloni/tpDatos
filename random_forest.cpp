@@ -60,14 +60,22 @@ std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subse
     return (*trees);
 }
 
-std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
+std::vector<std::vector<float>> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
     // por ahora que devuelva un map con strings en cada id, despues vemos si lo hacemos void y
     // que output directamente o que.
     
+    int number_of_categories = 39;
+    const std::string categories[] = {"ARSON","ASSAULT","BAD CHECKS","BRIBERY","BURGLARY","DISORDERLY CONDUCT","DRIVING UNDER THE INFLUENCE","DRUG/NARCOTIC","DRUNKENNESS","EMBEZZLEMENT","EXTORTION","FAMILY OFFENSES","FORGERY/COUNTERFEITING","FRAUD","GAMBLING","KIDNAPPING","LARCENY/THEFT","LIQUOR LAWS","LOITERING","MISSING PERSON","NON-CRIMINAL","OTHER OFFENSES","PORNOGRAPHY/OBSCENE MAT","PROSTITUTION","RECOVERED VEHICLE","ROBBERY","RUNAWAY","SECONDARY CODES","SEX OFFENSES FORCIBLE","SEX OFFENSES NON FORCIBLE","STOLEN PROPERTY","SUICIDE","SUSPICIOUS OCC","TREA","TRESPASS","VANDALISM","VEHICLE THEFT","WARRANTS","WEAPON LAWS"};
     
-    std::map<int, std::string> results = *(new std::map<int, std::string>());
-    unsigned currentMax;
-    std::string most_voted_category;
+    std::map<std::string, int> categories_indeces = *(new std::map<std::string,int>());
+    for (int i=0; i<number_of_categories; i++) {
+        categories_indeces[categories[i]] = i;
+    }
+    
+    
+//    std::map<int, std::vector<float>> results = *(new std::map<int, std::vector<float> >());
+    std::vector<std::vector<float>> results = *(new std::vector<std::vector<float>>);
+
     std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
     std::string prediction;
     Crime* to_predict;
@@ -88,16 +96,32 @@ std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector
 //        if (i%20000==0){
 //            std::cout << "van " << i << " crimenes\n" << std::endl;
 //        }
-        currentMax = 0;
-        //busca la categoria mas votada
+        
+
+        
+        std::vector<float> probabilities;
+        
+        float probability;
+        
+        probabilities = *(new std::vector<float>(40));
+        probabilities[0]= to_predict->id;
+        float divisor = trees.size();
+        int votes;
         for(auto it = tree_votes.begin(); it != tree_votes.end(); ++it ){
-            if (it ->second > currentMax) {
-                most_voted_category = it->first;
-                currentMax = it->second; 
+            votes = it->second;
+            probability = votes/divisor;
+            if (probability>0.001) {
+                int index = categories_indeces[it->first] + 1;
+                probabilities[index] = probability;
             }
+        
         }
+        
+        results.push_back(probabilities) ;
+        
+        probabilities.clear();
         //cuarda en la pos id del crimen la categoria mas votada
-        results[to_predict->id] = most_voted_category;
+        //results[to_predict->id] = most_voted_category;
         tree_votes.clear();
     
     }
@@ -108,37 +132,39 @@ std::map<int, std::string> make_predictions(std::vector<C45*> trees, std::vector
 }
 
 
-void output_predictions(std::map<int, std::string> results){
+
+void output_predictions(std::vector<std::vector<float>> results){
     int number_of_categories = 39;
-    const std::string categories[] = {"ARSON","ASSAULT","BAD CHECKS","BRIBERY","BURGLARY","DISORDERLY CONDUCT","DRIVING UNDER THE INFLUENCE","DRUG/NARCOTIC","DRUNKENNESS","EMBEZZLEMENT","EXTORTION","FAMILY OFFENSES","FORGERY/COUNTERFEITING","FRAUD","GAMBLING","KIDNAPPING","LARCENY/THEFT","LIQUOR LAWS","LOITERING","MISSING PERSON","NON-CRIMINAL","OTHER OFFENSES","PORNOGRAPHY/OBSCENE MAT","PROSTITUTION","RECOVERED VEHICLE","ROBBERY","RUNAWAY","SECONDARY CODES","SEX OFFENSES FORCIBLE","SEX OFFENSES NON FORCIBLE","STOLEN PROPERTY","SUICIDE","SUSPICIOUS OCC","TREA","TRESPASS","VANDALISM","VEHICLE THEFT","WARRANTS","WEAPON LAWS"};
-    
-    std::map<std::string, int> categories_indeces = *(new std::map<std::string,int>());
-    for (int i=0; i<number_of_categories; i++) {
-        categories_indeces[categories[i]] = i;
-    }
-    
-    
+
     
     std::ofstream myfile;
     myfile.open ("predictions.csv");
     myfile << "Id,ARSON,ASSAULT,BAD CHECKS,BRIBERY,BURGLARY,DISORDERLY CONDUCT,DRIVING UNDER THE INFLUENCE,DRUG/NARCOTIC,DRUNKENNESS,EMBEZZLEMENT,EXTORTION,FAMILY OFFENSES,FORGERY/COUNTERFEITING,FRAUD,GAMBLING,KIDNAPPING,LARCENY/THEFT,LIQUOR LAWS,LOITERING,MISSING PERSON,NON-CRIMINAL,OTHER OFFENSES,PORNOGRAPHY/OBSCENE MAT,PROSTITUTION,RECOVERED VEHICLE,ROBBERY,RUNAWAY,SECONDARY CODES,SEX OFFENSES FORCIBLE,SEX OFFENSES NON FORCIBLE,STOLEN PROPERTY,SUICIDE,SUSPICIOUS OCC,TREA,TRESPASS,VANDALISM,VEHICLE THEFT,WARRANTS,WEAPON LAWS\n";
+    std::vector<float> probabilities;
+    int i;
+    int j;
     
+    ///refactor aca!!!!!!!!
     
-    for(auto it = results.begin(); it != results.end(); ++it ){
-        myfile << std::to_string(it->first);
-        int index_of_category = categories_indeces[it->second];
-       // unsigned int index_of_category = categories_indeces["WEAPON LAWS"]; esto queda para los tests del writer
-        for (int i=0; i<index_of_category; i++) {
-            myfile << ",0";
-        }
-        myfile << ",1";
-        for (int i =index_of_category+1; i<number_of_categories; i++) {
-            myfile << ",0";
-        }
-        myfile << "\n";
-
+    for (i=0; i<results.size(); ++i) {
+        probabilities = results[i];
         
+        myfile <<  std::to_string(int(probabilities[0]));
+ 
+        
+        for (j=1; j<number_of_categories; ++j) {
+            myfile << ",";
+            myfile << std::to_string(probabilities[j]);
+//            myfile << ",";
+        }
+//        myfile << std::to_string(probabilities[j+1]);
+        myfile << "\n";
+//        if (i%20000==0){
+//            std::cout << "van " << i << " registros pasados\n" << std::endl;
+//        }
     }
+    
+
     
     myfile.close();
 }
