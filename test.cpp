@@ -328,6 +328,60 @@ void feature_analysis(std::vector<Crime*> data){
 
 }
 
+void tree_cross_validation(std::vector<Crime*> train){
+	
+	print_title(" C45 CROSS VALIDATION ");
+	
+	int start;
+    int end;
+	
+	int tree_size = 10000;
+	
+	int total_predictions = 0;
+	int correct_predictions = 0;
+	
+	std::vector<Crime*> tree_food;
+	C45* tree;
+	Crime* predict_this;
+	
+	std::string correct_answer;
+	std::string prediction;
+	cout << "Probability of prediction being part of train set: ~2%" << endl;
+
+	std::string result;
+	
+	for(int i = 0; i != 100; i++){
+		start = clock();
+		
+		result = "incorrect";
+		
+		tree_food = generate_subset(train, tree_size + 1);
+		predict_this = tree_food.back();
+		tree_food.pop_back();
+		tree = new C45(&tree_food, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+		
+		//cout << "llegue hasta aca" << endl;
+		
+		correct_answer = predict_this -> category;
+		prediction = make_prediction(*tree, predict_this);
+		
+		total_predictions ++;
+		if(correct_answer.compare(prediction)) {
+			correct_predictions++;
+			result = "correct";
+		}
+		
+		delete tree;
+		end = clock();
+		
+		cout << (i+1) << ". Prediction " << prediction << " is " << result << ". Time: " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << endl;
+		
+	}
+	
+	cout << "Out of " << total_predictions << " made, " << correct_predictions << " were correct." << endl;
+	
+}
+
 int main(int argc, char** argv) {
     std::vector<Crime*> train = readCsv("train.csv");
     std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
@@ -343,6 +397,7 @@ int main(int argc, char** argv) {
     random_forest_test(train,predict);
     speed_test(train);
     feature_analysis(train);
+    //tree_cross_validation(train);
     
    	return 0;
 }
