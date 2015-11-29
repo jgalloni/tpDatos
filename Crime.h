@@ -18,8 +18,7 @@ class Crime {
 	public:
 	
 		Crime(float x, float y);
-
-		Crime(Crime &crime);
+		~Crime();
 
 		Coordinate * coordinate;
 		struct tm date;

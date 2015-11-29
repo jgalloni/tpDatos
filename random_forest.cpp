@@ -46,7 +46,7 @@ std::vector<Crime*> generate_subset(std::vector<Crime*> set, int subset_size){
 
 std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subset_size){
     //por ahi podemos hacer que en vez de subset size le pasemos un porcentaje 0-1
-    std::vector<Crime*> subset = *new std::vector<Crime*>();
+    std::vector<Crime*> subset = std::vector<Crime*>();
     C45* new_tree;
     std::vector<C45*>* trees = new std::vector<C45*>();
     for (int i=0; i<n_trees; i++) {
@@ -64,19 +64,19 @@ std::vector<std::vector<float>> make_predictions(std::vector<C45*> trees, std::v
     // por ahora que devuelva un map con strings en cada id, despues vemos si lo hacemos void y
     // que output directamente o que.
     
-    int number_of_categories = 39;
+    int number_of_categories = 39; //esto no es mejor ponerlo como un define?
     const std::string categories[] = {"ARSON","ASSAULT","BAD CHECKS","BRIBERY","BURGLARY","DISORDERLY CONDUCT","DRIVING UNDER THE INFLUENCE","DRUG/NARCOTIC","DRUNKENNESS","EMBEZZLEMENT","EXTORTION","FAMILY OFFENSES","FORGERY/COUNTERFEITING","FRAUD","GAMBLING","KIDNAPPING","LARCENY/THEFT","LIQUOR LAWS","LOITERING","MISSING PERSON","NON-CRIMINAL","OTHER OFFENSES","PORNOGRAPHY/OBSCENE MAT","PROSTITUTION","RECOVERED VEHICLE","ROBBERY","RUNAWAY","SECONDARY CODES","SEX OFFENSES FORCIBLE","SEX OFFENSES NON FORCIBLE","STOLEN PROPERTY","SUICIDE","SUSPICIOUS OCC","TREA","TRESPASS","VANDALISM","VEHICLE THEFT","WARRANTS","WEAPON LAWS"};
     
-    std::map<std::string, int> categories_indeces = *(new std::map<std::string,int>());
+    std::map<std::string, int> categories_indeces = std::map<std::string,int>();
     for (int i=0; i<number_of_categories; i++) {
         categories_indeces[categories[i]] = i;
     }
     
     
 //    std::map<int, std::vector<float>> results = *(new std::map<int, std::vector<float> >());
-    std::vector<std::vector<float>> results = *(new std::vector<std::vector<float>>);
+    std::vector<std::vector<float>> results = std::vector<std::vector<float>>();
 
-    std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
+    std::map<std::string, int> tree_votes = std::map<std::string, int>();
     std::string prediction;
     Crime* to_predict;
     for (unsigned int i=0; i<predict_these.size(); i++) {
@@ -103,7 +103,7 @@ std::vector<std::vector<float>> make_predictions(std::vector<C45*> trees, std::v
         
         float probability;
         
-        probabilities = *(new std::vector<float>(40));
+        probabilities = std::vector<float>(40);
         probabilities[0]= to_predict->id;
         float divisor = trees.size();
         int votes;

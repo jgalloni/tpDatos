@@ -177,7 +177,6 @@ void Crime::set_moment_of_the_day() {
 }
 
 void Crime::load_day_of_week(char *dayOfWeek) {
-	//this->day_of_week = std::string(day_of_week);
 	this->features[0]=std::string(dayOfWeek);
 }
 
@@ -204,7 +203,6 @@ void Crime::load_address(char *address) {
 	this->features[2] = std::string("ST");
 }
 
-void Crime::set_coordinate(float x, float y) {
-	Coordinate * coordinate = new Coordinate(x,y);
-	this->coordinate = coordinate;
+Crime::~Crime(void){
+	delete this->coordinate;
 }

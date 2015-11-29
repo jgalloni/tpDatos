@@ -53,7 +53,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
     
     std::cout<<"Reading file:"<<fileName<<"\n";
     
-    Crime *crime;
+    Crime* crime;
     file_c.getline(line,400);
 	file_c.getline(line, 400);
 	

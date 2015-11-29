@@ -21,7 +21,7 @@ typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
 ////AUX FUNCTIONS
 
 std::string popular_crime(std::vector<Crime*>* crimes){
-	std::map<const std::string, int> pop_crimes = *(new std::map<const std::string, int>());
+	std::map<const std::string, int> pop_crimes = std::map<const std::string, int>();
 	std::string current_crime;
 
 	for(std::vector<Crime*>::size_type i = 0; i != (*crimes).size(); ++i){
@@ -108,7 +108,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 	location_test[1] = split_in_3_clusters;
 	location_test[2] = split_in_4_clusters;
 	
-	children = *(new std::map<std::string, C45*>());
+	children = std::map<std::string, C45*>();
 	//lo hago empezar con todas las features
 	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	

@@ -383,7 +383,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 		
 	}
 	
-	cout << "Out of " << total_predictions << " made, " << correct_predictions << " were correct." << endl;
+	cout << "Out of " << total_predictions << " predictions made, " << correct_predictions << " were correct." << endl;
 	
 }
 
@@ -403,7 +403,7 @@ int main(int argc, char** argv) {
     speed_test(train);
     feature_analysis(train);
     //tree_cross_validation(train);
-    
+        
    	return 0;
 }
 
