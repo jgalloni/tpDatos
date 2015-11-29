@@ -77,8 +77,8 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     
     print_title(" C45 TRIVIAL CHECKS ");
     
-    std::vector<Crime*>* crimes = new std::vector<Crime*>();
-    C45* t1 = new C45(crimes, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    std::vector<Crime*> crimes = std::vector<Crime*>();
+    C45* t1 = new C45(&crimes, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     
     print_test("Empty tree test", t1);
     
@@ -256,6 +256,10 @@ void speed_test(std::vector<Crime*> crimes){
     //end = clock();
     //std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
+    delete t1;
+    delete t2;
+    delete t3;
+    
     //para suprimir warning de que las variables no se usan.
     t1->is_leaf();
     t2->is_leaf();
@@ -293,7 +297,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     print_test("Same instance, another tree", !prediction1.empty());
     cout << "Prediction is: " << prediction1 << endl;
     
-    
+    delete t0;
+    delete t1;
     
     
 }
@@ -388,21 +393,21 @@ void tree_cross_validation(std::vector<Crime*> train){
 }
 
 int main(int argc, char** argv) {
-    std::vector<Crime*> train = readCsv("train.csv");
-    //std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
+    //std::vector<Crime*> train = readCsv("train.csv");
+    std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
     //std::vector<Crime*> reduced = readCsv("reduced.csv");
     //std::vector<Crime*> predict = readCsv2("test.csv");
     
     //reader_test(train, predict);
     //coordinate_tests();
-    //c45_basic_tests(homogeneous);
-    //c45_set_operation_test(homogeneous);
+    c45_basic_tests(homogeneous);
+    c45_set_operation_test(homogeneous);
     //c45_gain_calculation_test(homogeneous, reduced);
     //c45_classification_test(train, predict);
     //random_forest_test(train,predict);
     //speed_test(train);
     //feature_analysis(train);
-    tree_cross_validation(train);
+    //tree_cross_validation(train);
         
    	return 0;
 }
