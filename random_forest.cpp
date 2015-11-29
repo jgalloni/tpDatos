@@ -79,10 +79,10 @@ std::vector<std::vector<float>> make_predictions(std::vector<C45*> trees, std::v
     std::map<std::string, int> tree_votes = *(new std::map<std::string, int>());
     std::string prediction;
     Crime* to_predict;
-    for (int i=0; i<predict_these.size(); i++) {
+    for (unsigned int i=0; i<predict_these.size(); i++) {
         to_predict = predict_these[i];
         
-        for (int j=0; j<trees.size(); j++) {
+        for (unsigned int j=0; j<trees.size(); j++) {
             //llena un map con los votos para cada categoria de los arboles
             prediction = make_prediction(*trees[j], to_predict);
             if (tree_votes.count(prediction) != 0){
@@ -134,15 +134,15 @@ std::vector<std::vector<float>> make_predictions(std::vector<C45*> trees, std::v
 
 
 void output_predictions(std::vector<std::vector<float>> results){
-    int number_of_categories = 39;
+    unsigned int number_of_categories = 39;
 
     
     std::ofstream myfile;
     myfile.open ("predictions.csv");
     myfile << "Id,ARSON,ASSAULT,BAD CHECKS,BRIBERY,BURGLARY,DISORDERLY CONDUCT,DRIVING UNDER THE INFLUENCE,DRUG/NARCOTIC,DRUNKENNESS,EMBEZZLEMENT,EXTORTION,FAMILY OFFENSES,FORGERY/COUNTERFEITING,FRAUD,GAMBLING,KIDNAPPING,LARCENY/THEFT,LIQUOR LAWS,LOITERING,MISSING PERSON,NON-CRIMINAL,OTHER OFFENSES,PORNOGRAPHY/OBSCENE MAT,PROSTITUTION,RECOVERED VEHICLE,ROBBERY,RUNAWAY,SECONDARY CODES,SEX OFFENSES FORCIBLE,SEX OFFENSES NON FORCIBLE,STOLEN PROPERTY,SUICIDE,SUSPICIOUS OCC,TREA,TRESPASS,VANDALISM,VEHICLE THEFT,WARRANTS,WEAPON LAWS\n";
     std::vector<float> probabilities;
-    int i;
-    int j;
+    unsigned int i;
+    unsigned int j;
     
     ///refactor aca!!!!!!!!
     
