@@ -48,15 +48,14 @@ std::string popular_crime(std::vector<Crime*>* crimes){
 }
 
 std::string find_type(C45 tree, Crime* crime, int feature_index){
-	std::vector<Crime*>* input = new std::vector<Crime*>();
-	input->push_back(crime);
-	std::map<const std::string, std::vector<Crime*>> hashed = (tree.best_test)( *input, feature_index);
+	std::vector<Crime*> input = std::vector<Crime*>();
+	input.push_back(crime);
+	std::map<const std::string, std::vector<Crime*>> hashed = (tree.best_test)( input, feature_index);
 	it_type iterator = hashed.begin();
 	return (iterator->first);
 	
 }
 
-//De existir, devuelve la clase que identifica el arbol. De lo contrario devuelve NULL
 std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 	if((*crimes).size() == 0){
 		return "LARCENY/THEFT";
@@ -110,7 +109,7 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 	
 	children = std::map<std::string, C45*>();
 	//lo hago empezar con todas las features
-	feature_indeces = std::vector<int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	feature_indeces = std::vector<int>{ 0, 1, 2, 3, 4, 5, 6 };
 	
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {

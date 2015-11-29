@@ -17,12 +17,10 @@ void Crime::set_category(char *category){
 
 void Crime::load_date(const tm &date) {
 	this->date = date;
-	set_holiday();
+	this->features[3]=get_season();
 	set_moment_of_the_day();
 	this->features[5]=get_month();
 	this->features[6]=get_hour();
-	this->features[7]=get_season();
-	this->features[8]=ends_meet();
 }
 
 std::string Crime::get_season(){
@@ -31,12 +29,6 @@ std::string Crime::get_season(){
 	else if (month >= 6 && month <= 8) return "Summer";
 	else if (month >= 9 && month <= 11) return "Autumn";
 	else return "Winter";
-}
-
-std::string Crime::ends_meet(){
-	int day = date.tm_mday;
-	if (day >= 20) return "+";
-	else return "-";
 }
 
 std::string Crime::get_month(){
@@ -69,87 +61,13 @@ std::string Crime::get_month(){
 	return "";
 }
 
-std::string Crime::get_hour(){
-	return std::to_string(date.tm_hour);
+std::string Crime::get_daylight(){
+	if(date.tm_hour >= 6 && date.tm_hour <= 18) return "+";
+	else return "-";
 }
 
-void Crime::set_holiday(){
-	switch (date.tm_mon) {
-		case 0: {//january
-			if (date.tm_mday == 0) {//1º (new year)
-				this->features[3] = "holiday";
-			}
-			else if ((date.tm_wday == 1) && (date.tm_mday > 14) && (date.tm_mday < 22)) {//monday week 3 (M.L.K day)
-				this->features[3] = "holiday";
-			}
-			else {
-				this->features[3] = "work";
-			}
-			break;
-			case 1: //febrero
-				if ((date.tm_wday == 1) && (date.tm_mday > 14) && (date.tm_mday < 22)) {//monday week 3 (President day)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 5://May
-				if ((date.tm_wday == 1) && (date.tm_mday > 24) && (date.tm_mday < 32)) {//monday week 3 (Memorial day)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 7: //july
-				if ((date.tm_mday == 4)) {//4º (indep. day)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 9: //September
-				if ((date.tm_wday == 1) && (date.tm_mday < 7)) {//monday week 1 (Laboral day)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 10: //October
-				if ((date.tm_wday == 1) && (date.tm_mday > 7) && (date.tm_mday < 15)) {//monday week 2 (Columbus  day)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 11: //November
-				if ((date.tm_mday == 11)) {//11 (Vet.  day)
-					this->features[3] = "holiday";
-				}
-				else if ((date.tm_wday == 4) && (date.tm_mday > 20) &&
-						 (date.tm_mday < 28)) {//thursday week 4 (Thanksgiving)
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			case 12://December
-				if (date.tm_mday == 25) {//christmas
-					this->features[3] = "holiday";
-				}
-				else {
-					this->features[3] = "work";
-				}
-			break;
-			default:
-				this->features[3] = "work";
-		}
-	}
+std::string Crime::get_hour(){
+	return std::to_string(date.tm_hour);
 }
 
 void Crime::set_moment_of_the_day() {

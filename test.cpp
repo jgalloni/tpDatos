@@ -18,7 +18,7 @@
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
-#define HOLYDAY 3
+#define DAYLIGHT 3
 #define MOMENT_OF_DAY 4
 #define MONTH 5
 #define HOUR 6
@@ -195,7 +195,7 @@ void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict)
     std::vector<float> results = make_predictions(fifty_trees,one_crime);
     
     int amount_of_crimes = 0;
-    for (int i=0; i<results.size(); ++i) {
+    for (unsigned int i=0; i<results.size(); ++i) {
         if (results[i]==-1) {
             amount_of_crimes++;
         }
@@ -351,19 +351,21 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
 }
 
 void single_gain_test(std::vector<Crime*> data, std::map<const std::string, std::vector<Crime*>> (*split)(std::vector<Crime*>, int), int index, std::string test_name){
-	//esto en el futuro hay que convertirlo en un promedio de muchos calculos
-	std::vector<Crime*> set1 = generate_subset(data, 50);
-	std::vector<Crime*> set2 = generate_subset(data, 100);
-	std::vector<Crime*> set3 = generate_subset(data, 1000);
-
-	float gain1 = gain_ratio(set1, split, index);
-	float gain2 = gain_ratio(set2, split, index);
-	float gain3 = gain_ratio(set3, split, index);
 	
-	cout << test_name << ", set size 50: " << gain1 << endl;
-	cout << test_name << ", set size 100: " << gain2 << endl;
-	cout << test_name << ", set size 1000: " << gain3 << endl;
+	float gain;
+	float sum_gain = 0;
+	float i = 0;
+	std::vector<Crime*> set;
 	
+	for(; i != 100; i++){
+		set = generate_subset(data, 1000);
+		gain = gain_ratio(set, split, index);
+		sum_gain += gain;
+	}
+	
+	float mean = sum_gain/i;
+	
+	cout << test_name << ", set size 1000: " << mean << endl;
 }
 
 void feature_analysis(std::vector<Crime*> data){
@@ -372,12 +374,11 @@ void feature_analysis(std::vector<Crime*> data){
 	single_gain_test(data, split_by_discrete_feature, DAY_OF_WEEK, "DayOfWeek");
 	single_gain_test(data, split_by_discrete_feature, DISTRICT, "District");
 	single_gain_test(data, split_by_discrete_feature, ADDRESS, "Address");
-	single_gain_test(data, split_by_discrete_feature, HOLYDAY, "Holyday");
+	single_gain_test(data, split_by_discrete_feature, DAYLIGHT, "Daylight");
 	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
 	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
 	single_gain_test(data, split_by_discrete_feature, HOUR, "Hour");
 	single_gain_test(data, split_by_discrete_feature, SEASON, "Season");
-	single_gain_test(data, split_by_discrete_feature, ENDS_MEET, "Ends meet");
 	single_gain_test(data, split_in_3_clusters, 0, "Location 3 clusters");
 	single_gain_test(data, split_in_4_clusters, 0, "Location 4 clusters");
 	single_gain_test(data, split_in_quadrants, 0, "Location 4 quadrants");
@@ -407,7 +408,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 
 	std::string result;
 	
-	for(int i = 0; i != 100; i++){
+	for(int i = 0; i != 500; i++){
 		start = clock();
 		
 		result = "incorrect";
@@ -431,7 +432,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 		delete tree;
 		end = clock();
 		
-		cout << (i+1) << ". Prediction " << prediction << " is " << result << ". Time: " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << endl;
+		cout << (i+1) << ". Prediction " << prediction << " is " << result << ". Time: " << ((float)end - start)/CLOCKS_PER_SEC << " seconds. (" << (correct_predictions)*100/total_predictions << "%)" << endl;
 		
 	}
 	

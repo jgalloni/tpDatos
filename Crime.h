@@ -11,7 +11,7 @@
 #include "Coordinate.h"
 #include <algorithm>
 
-#define N_FEATURES 9
+#define N_FEATURES 8
 
 class Crime {
 
@@ -36,9 +36,8 @@ class Crime {
 		
 	private:
 		std::string get_season();
+		std::string get_daylight();
 		std::string get_hour();
-		std::string ends_meet();
-		void set_holiday();
 		void set_moment_of_the_day();
 		std::string get_month();
 };
