@@ -28,7 +28,7 @@
 #define MIN_DIVISIBLE 5
 
 using namespace std;
-typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
+typedef std::map<const std::string, std::vector<Crime*>>::iterator it_type;
 
 void print_title(const char* test_title){
     cout << "===================================" << endl;
@@ -54,23 +54,18 @@ void coordinate_tests() {
     
     print_title(" COORDINATE TEST ");
     
-    Coordinate* c0 = new Coordinate(0,0);
-    Coordinate* c1 = new Coordinate(1,1);
-    Coordinate* c2 = new Coordinate(2,2);
-    Coordinate* c3 = new Coordinate(0,1);
-    Coordinate* c4 = new Coordinate(1,0);
+    Coordinate c0 = Coordinate(0,0);
+    Coordinate c1 = Coordinate(1,1);
+    Coordinate c2 = Coordinate(2,2);
+    Coordinate c3 = Coordinate(0,1);
+    Coordinate c4 = Coordinate(1,0);
     
-    print_test("The squared norm from (1,1) to (2,2) is 2", (*c1).sqnorm(c2) == 2 );
-    print_test("The squared norm from (0,1) to (1,0) is 2", (*c3).sqnorm(c4) == 2 );
-    print_test("The squared norm from (1,1) to (2,2) is not 3", (*c1).sqnorm(c2) != 3 );
-    print_test("The operation is commutative", (*c2).sqnorm(c1) == 2);
-    print_test("The squared norm from (0,0) to (1,0) is 1", (*c0).sqnorm(c4) == 1 );
-    
-    delete(c0);
-    delete(c1);
-    delete(c2);
-    delete(c3);
-    delete(c4);
+    print_test("The squared norm from (1,1) to (2,2) is 2", c1.sqnorm(&c2) == 2 );
+    print_test("The squared norm from (0,1) to (1,0) is 2", c3.sqnorm(&c4) == 2 );
+    print_test("The squared norm from (1,1) to (2,2) is not 3", c1.sqnorm(&c2) != 3 );
+    print_test("The operation is commutative", c2.sqnorm(&c1) == 2);
+    print_test("The squared norm from (0,0) to (1,0) is 1", c0.sqnorm(&c4) == 1 );
+
 }
 
 void c45_basic_tests(std::vector<Crime*> homogeneous) {
@@ -78,7 +73,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     print_title(" C45 TRIVIAL CHECKS ");
     
     std::vector<Crime*> crimes = std::vector<Crime*>();
-    C45* t1 = new C45(&crimes, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    C45* t1 = new C45(crimes, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     
     print_test("Empty tree test", t1);
     
@@ -93,7 +88,7 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     (*t1).set_feature_indeces(&v2);
     print_test("Set tree will check set features", (*t1).feature_indeces == v2);
     
-    C45* t2 = new C45(&homogeneous, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    C45* t2 = new C45(homogeneous, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     class_of_tree = t2->tree_class;
     print_test("Category of homogeneous.csv set is 'OTHER OFFENSES'", class_of_tree.compare("OTHER OFFENSES") == 0);
     print_test("Category of homogeneous.csv set is not 'CANDY'", class_of_tree.compare("CANDY") != 0);
@@ -109,16 +104,16 @@ void c45_set_operation_test(std::vector<Crime*> homogeneous) {
     print_test("Homogeneous set has 5 subsets by district", subsets_by_feature(homogeneous, DISTRICT) == 5);
     print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADDRESS) == 3);
     
-    std::map<const std::string, std::vector<Crime*>*> subs0 = split_by_discrete_feature(homogeneous, DAY_OF_WEEK);
-    std::map<const std::string, std::vector<Crime*>*> subs1 = split_by_discrete_feature(homogeneous, DISTRICT);
+    std::map<const std::string, std::vector<Crime*>> subs0 = split_by_discrete_feature(homogeneous, DAY_OF_WEEK);
+    std::map<const std::string, std::vector<Crime*>> subs1 = split_by_discrete_feature(homogeneous, DISTRICT);
     
-    print_test("Subset in single member maps are not empty", subs0["Wednesday"]->size() != 0);
-    print_test("Subset in single member map is as big as the original set", subs0["Wednesday"]->size() == homogeneous.size());
-    print_test("Subsets in mutiple member maps are not empty", subs1["NORTHERN"]->size() != 0);
+    print_test("Subset in single member maps are not empty", subs0["Wednesday"].size() != 0);
+    print_test("Subset in single member map is as big as the original set", subs0["Wednesday"].size() == homogeneous.size());
+    print_test("Subsets in mutiple member maps are not empty", subs1["NORTHERN"].size() != 0);
     unsigned int sum = 0;
     
     for(it_type iterator = subs1.begin(); iterator != subs1.end(); iterator++) {
-        sum = sum + (iterator->second)->size();
+        sum = sum + (iterator->second).size();
     }
     print_test("Sum of members of subsets is equal to members of original set", sum == homogeneous.size());
 }
@@ -174,7 +169,7 @@ void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict)
     print_test("Succesfully generates subset of size 50", sub1.size() == 50);
     print_test("Previous subset not size 51", sub1.size() != 51);
     
-    C45* t0 = new C45(&sub1, DEFAULT_HEIGHT, 1);
+    C45* t0 = new C45(sub1, DEFAULT_HEIGHT, 1);
     
     print_test("Creates tree with it", t0);
     
@@ -237,17 +232,17 @@ void speed_test(std::vector<Crime*> crimes){
     int end;
     
     start = clock();
-    t1 = new C45(&sub1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    t1 = new C45(sub1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     end = clock();
     std::cout << "Size 100 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
     start = clock();
-    t2 = new C45(&sub2, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    t2 = new C45(sub2, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     end = clock();
     std::cout << "Size 1000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
     start = clock();
-    t3 = new C45(&sub3, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    t3 = new C45(sub3, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     end = clock();
     std::cout << "Size 10000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
@@ -256,15 +251,15 @@ void speed_test(std::vector<Crime*> crimes){
     //end = clock();
     //std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
     
-    delete t1;
-    delete t2;
-    delete t3;
-    
     //para suprimir warning de que las variables no se usan.
     t1->is_leaf();
     t2->is_leaf();
     t3->is_leaf();
     //t4->is_leaf();
+    
+    delete t1;
+    delete t2;
+    delete t3;
 }
 
 void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predict){
@@ -274,8 +269,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     std::vector<Crime*> sample0 = generate_subset(data, 1000);
     std::vector<Crime*> sample1 = generate_subset(data, 1000);
     
-    C45* t0 = new C45(&sample0, DEFAULT_HEIGHT, MIN_DIVISIBLE);
-    C45* t1 = new C45(&sample1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    C45* t0 = new C45(sample0, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    C45* t1 = new C45(sample1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     Crime* predict_this = predict[0];
     
     std::string prediction0 = make_prediction(*t0, predict_this);
@@ -303,7 +298,7 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     
 }
 
-void single_gain_test(std::vector<Crime*> data, std::map<const std::string, std::vector<Crime*>*> (*split)(std::vector<Crime*>, int), int index, std::string test_name){
+void single_gain_test(std::vector<Crime*> data, std::map<const std::string, std::vector<Crime*>> (*split)(std::vector<Crime*>, int), int index, std::string test_name){
 	//esto en el futuro hay que convertirlo en un promedio de muchos calculos
 	std::vector<Crime*> set1 = generate_subset(data, 50);
 	std::vector<Crime*> set2 = generate_subset(data, 100);
@@ -368,7 +363,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 		tree_food = generate_subset(train, tree_size + 1);
 		predict_this = tree_food.back();
 		tree_food.pop_back();
-		tree = new C45(&tree_food, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+		tree = new C45(tree_food, DEFAULT_HEIGHT, MIN_DIVISIBLE);
 		
 		//cout << "llegue hasta aca" << endl;
 		
@@ -393,20 +388,20 @@ void tree_cross_validation(std::vector<Crime*> train){
 }
 
 int main(int argc, char** argv) {
-    //std::vector<Crime*> train = readCsv("train.csv");
+    std::vector<Crime*> train = readCsv("train.csv");
     std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
-    //std::vector<Crime*> reduced = readCsv("reduced.csv");
-    //std::vector<Crime*> predict = readCsv2("test.csv");
+    std::vector<Crime*> reduced = readCsv("reduced.csv");
+    std::vector<Crime*> predict = readCsv2("test.csv");
     
-    //reader_test(train, predict);
-    //coordinate_tests();
+    reader_test(train, predict);
+    coordinate_tests();
     c45_basic_tests(homogeneous);
     c45_set_operation_test(homogeneous);
-    //c45_gain_calculation_test(homogeneous, reduced);
-    //c45_classification_test(train, predict);
-    //random_forest_test(train,predict);
-    //speed_test(train);
-    //feature_analysis(train);
+    c45_gain_calculation_test(homogeneous, reduced);
+    c45_classification_test(train, predict);
+    random_forest_test(train,predict);
+    speed_test(train);
+    feature_analysis(train);
     //tree_cross_validation(train);
         
    	return 0;

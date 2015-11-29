@@ -16,7 +16,7 @@
 
 using namespace std;
 
-typedef std::map<const std::string, std::vector<Crime*>*>::iterator it_type;
+typedef std::map<const std::string, std::vector<Crime*>>::iterator it_type;
 
 ////AUX FUNCTIONS
 
@@ -50,7 +50,7 @@ std::string popular_crime(std::vector<Crime*>* crimes){
 std::string find_type(C45 tree, Crime* crime, int feature_index){
 	std::vector<Crime*>* input = new std::vector<Crime*>();
 	input->push_back(crime);
-	std::map<const std::string, std::vector<Crime*>*> hashed = (tree.best_test)( *input, feature_index);
+	std::map<const std::string, std::vector<Crime*>> hashed = (tree.best_test)( *input, feature_index);
 	it_type iterator = hashed.begin();
 	return (iterator->first);
 	
@@ -99,8 +99,8 @@ std::string make_prediction(C45 tree, Crime* crime){
 
 ////CLASS
 
-C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool location_assigned){
-	tree_class = class_of_tree(crimes, min_divisible);
+C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool location_assigned){
+	tree_class = class_of_tree(&crimes, min_divisible);
 		
 	//test function initialization
 	discrete_test[0] = split_by_discrete_feature;
@@ -119,20 +119,20 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		best_test = discrete_test[0];
 		int best_index = feature_indeces[0];
 		int next_index;
-		float best_gain = gain_ratio(*crimes, discrete_test[0], best_index);
+		float best_gain = gain_ratio(crimes, discrete_test[0], best_index);
 		float next_gain;
-		std::map<const std::string, std::vector<Crime*>*> best_split = (discrete_test[0])(*crimes, best_index);
+		std::map<const std::string, std::vector<Crime*>> best_split = (discrete_test[0])(crimes, best_index);
 		
 		for (int i = 0; i != DISCRETE_TESTS; i++){
 			//usa la funcion dos veces por vuelta. Se podra optimizar?
 			for (unsigned int next = 0; next != feature_indeces.size() ; next++){
 				if(i == 0 && next == 0) continue;
 				next_index = feature_indeces[next];
-				next_gain = gain_ratio(*crimes, discrete_test[i], next_index);
+				next_gain = gain_ratio(crimes, discrete_test[i], next_index);
 				if (next_gain > best_gain){
 					best_gain = next_gain;
 					best_index = next_index;
-					best_split = (discrete_test[i])(*crimes, best_index);
+					best_split = (discrete_test[i])(crimes, best_index);
 					best_test = discrete_test[i];
 				
 				} 
@@ -144,10 +144,10 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		bool location_branch = location_assigned;
 		if(location_assigned == false){
 			for(int i = 0; i != LOCATION_TESTS; i++){
-				next_gain = gain_ratio(*crimes, location_test[i]);
+				next_gain = gain_ratio(crimes, location_test[i]);
 				if (next_gain > best_gain){
 						best_gain = next_gain;
-						best_split = (location_test[i])(*crimes, 0);
+						best_split = (location_test[i])(crimes, 0);
 						best_test = location_test[i];
 						best_index = -1;
 						location_branch = true;
@@ -158,7 +158,7 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		
 		//If no entropy reducing tests available then,
 		if(best_gain == 0){
-			tree_class = popular_crime(crimes);
+			tree_class = popular_crime(&crimes);
 			return;
 		}
 				
@@ -169,14 +169,11 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		}
 		
 		//Criteria: if instance type was not available in the train set, then the prediction is the most common category at this point.
-		std::string pop_crime = popular_crime(crimes);
-		children["other"] = new C45( new std::vector<Crime*>(), max_hight-1, min_divisible);
+		std::string pop_crime = popular_crime(&crimes);
+		children["other"] = new C45( std::vector<Crime*>(), max_hight-1, min_divisible);
 		children["other"]->tree_class = pop_crime;
 		
 	}
-	
-	//al menos le hace delete a los crimenes
-	crimes->clear();
 }
 
 bool C45::is_leaf(){

@@ -13,8 +13,8 @@
 
 //DISCRETE FUNCTIONS
 
-std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std::vector<Crime*> set, int feature_index){
-	std::map<const std::string, std::vector<Crime*>*> subsets = std::map<const std::string, std::vector<Crime*>*>();
+std::map<const std::string, std::vector<Crime*>> split_by_discrete_feature(std::vector<Crime*> set, int feature_index){
+	std::map<const std::string, std::vector<Crime*>> subsets = std::map<const std::string, std::vector<Crime*>>();
 	Crime* crime;
 	
 	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
@@ -22,10 +22,10 @@ std::map<const std::string, std::vector<Crime*>*> split_by_discrete_feature(std:
 		std::string category = crime->features[feature_index];
 		
 		if(subsets.count(category) == 0) {
-				subsets[category] = new std::vector<Crime*>();
+				subsets[category] = std::vector<Crime*>();
 		}
 		
-		subsets[category]->push_back(crime);
+		subsets[category].push_back(crime);
 	}
 	
 	return subsets;
@@ -60,8 +60,8 @@ std::map<const std::string, std::vector<Crime*>*> split_biggest_set(std::vector<
 
 //LOCATION FUNCTIONS
 
-std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector<Crime*> set, int feature_index = 0){
-	std::map<const std::string, std::vector<Crime*>*> split = std::map<const std::string, std::vector<Crime*>*>();
+std::map<const std::string, std::vector<Crime*>> split_in_quadrants(std::vector<Crime*> set, int feature_index = 0){
+	std::map<const std::string, std::vector<Crime*>> split = std::map<const std::string, std::vector<Crime*>>();
 	std::string quadrant;
 	Crime* crime;
 	
@@ -79,18 +79,18 @@ std::map<const std::string, std::vector<Crime*>*> split_in_quadrants(std::vector
 			quadrant = "Q4";
 			
 		if(split.count(quadrant) == 0) {
-				split[quadrant] = new std::vector<Crime*>();
+				split[quadrant] = std::vector<Crime*>();
 		}
 				
-		split[quadrant]->push_back(crime);
+		split[quadrant].push_back(crime);
 	}
 	
 	return split;
 }
 
-std::map<const std::string, std::vector<Crime*>*> split_in_3_clusters(std::vector<Crime*> set, int feature_index = 0){
+std::map<const std::string, std::vector<Crime*>> split_in_3_clusters(std::vector<Crime*> set, int feature_index = 0){
 	//funcion menos generica del universo
-	std::map<const std::string, std::vector<Crime*>*> split = std::map<const std::string, std::vector<Crime*>*>();
+	std::map<const std::string, std::vector<Crime*>> split = std::map<const std::string, std::vector<Crime*>>();
 	std::string cluster;
 	Coordinate c1 = Coordinate(-122.4099, 37.73587);
 	Coordinate c2 = Coordinate(-122.4152, 37.78174);
@@ -117,19 +117,19 @@ std::map<const std::string, std::vector<Crime*>*> split_in_3_clusters(std::vecto
 		}	
 			
 		if(split.count(cluster) == 0) {
-				split[cluster] = new std::vector<Crime*>();
+				split[cluster] = std::vector<Crime*>();
 		}
 				
-		split[cluster]->push_back(crime);
+		split[cluster].push_back(crime);
 	}
 	
 	return split;
 }
 
 
-std::map<const std::string, std::vector<Crime*>*> split_in_4_clusters(std::vector<Crime*> set, int feature_index = 0){
+std::map<const std::string, std::vector<Crime*>> split_in_4_clusters(std::vector<Crime*> set, int feature_index = 0){
 	//esta ademas esta duplicada
-	std::map<const std::string, std::vector<Crime*>*> split = std::map<const std::string, std::vector<Crime*>*>();
+	std::map<const std::string, std::vector<Crime*>> split = std::map<const std::string, std::vector<Crime*>>();
 	std::string cluster;
 	Coordinate c1 = Coordinate(-122.4096, 37.78474);
 	Coordinate c2 = Coordinate(-122.4758, 37.74653);
@@ -162,10 +162,10 @@ std::map<const std::string, std::vector<Crime*>*> split_in_4_clusters(std::vecto
 		}	
 			
 		if(split.count(cluster) == 0) {
-				split[cluster] = new std::vector<Crime*>();
+				split[cluster] = std::vector<Crime*>();
 		}
 				
-		split[cluster]->push_back(crime);
+		split[cluster].push_back(crime);
 	}
 	
 	return split;
@@ -173,8 +173,8 @@ std::map<const std::string, std::vector<Crime*>*> split_in_4_clusters(std::vecto
 
 //OTHER SET OPERATIONS
 
-std::map<const std::string, std::vector<Crime*>*> split_by_category(std::vector<Crime*> set){
-	std::map<const std::string, std::vector<Crime*>*> subsets = std::map<const std::string, std::vector<Crime*>*>();
+std::map<const std::string, std::vector<Crime*>> split_by_category(std::vector<Crime*> set){
+	std::map<const std::string, std::vector<Crime*>> subsets = std::map<const std::string, std::vector<Crime*>>();
 	Crime* crime;
 	
 	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
@@ -182,17 +182,17 @@ std::map<const std::string, std::vector<Crime*>*> split_by_category(std::vector<
 		std::string category = crime->category;
 		
 		if(subsets.count(category) == 0) {
-				subsets[category] = new std::vector<Crime*>();
+				subsets[category] = std::vector<Crime*>();
 		}
 		
-		subsets[category]->push_back(crime);
+		subsets[category].push_back(crime);
 	}
 	
 	return subsets;
 }
 
 int subsets_by_feature(std::vector<Crime*> set, int feature_index){
-	std::map<const std::string, std::vector<Crime*>*> subsets = split_by_discrete_feature(set, feature_index);
+	std::map<const std::string, std::vector<Crime*>> subsets = split_by_discrete_feature(set, feature_index);
 	return subsets.size();
 }
 
