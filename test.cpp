@@ -192,21 +192,73 @@ void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict)
     
     std::vector<Crime*> one_crime = generate_subset(predict, 1);
     
-    std::vector<std::vector<float>> results = make_predictions(fifty_trees,one_crime);
+    std::vector<float> results = make_predictions(fifty_trees,one_crime);
     
-    print_test("Sucesfully creates vector with one result from 50 trees", results.size() == 1);
+    int amount_of_crimes = 0;
+    for (int i=0; i<results.size(); ++i) {
+        if (results[i]==-1) {
+            amount_of_crimes++;
+        }
+    }
     
+    print_test("Sucesfully creates vector with one set of probabilities from 50 trees", amount_of_crimes == 1);
     
-    int crime_id = one_crime[0]->id;
-    int prediction_id = results[0][0];
-    
-    print_test("Prediction id and actual id match", crime_id == prediction_id);
+    int j =0;
     float sum_of_probs = 0;
-    for (int i=1; i<40; i++) {
-        sum_of_probs = sum_of_probs + results[0][i];
+    while (results[j]!=-1) {
+        sum_of_probs = results[j+1];
+        j= j+2;
+        
     }
     
     print_test("Sum of predicted probabilities is not greater than 1", sum_of_probs <= 1);
+    
+//    print_title(" RANDOM FOREST TEST ");
+//    
+//    std::vector<Crime*> sub0 = generate_subset(crimes, 50);
+//    std::vector<Crime*> sub1 = generate_subset(crimes, 50);
+//    
+//    print_test("Succesfully generates subset of size 50", sub1.size() == 50);
+//    print_test("Previous subset not size 51", sub1.size() != 51);
+//    
+//    C45* t0 = new C45(sub1, DEFAULT_HEIGHT, 1);
+//    
+//    print_test("Creates tree with it", t0);
+//    
+//    bool different = false;
+//    for(std::vector<Crime*>::size_type i = 0; i != sub0.size(); i++){
+//        if(sub0[i] != sub1[i]){
+//            different = true;
+//            continue;
+//        }
+//    }
+//    print_test("Two separately generated subsets of same size are different", different == true);
+//    
+//    std::vector<C45*> one_tree = generate_trees(crimes, 1, 50);
+//    C45* t1 = one_tree[0];
+//    print_test("Sucesfully creates one tree", t1);
+//    
+//    std::vector<C45*> fifty_trees = generate_trees(crimes, 50, 100);
+//    
+//    print_test("Sucesfully creates 50 trees", fifty_trees.size() == 50);
+//    
+//    std::vector<Crime*> one_crime = generate_subset(predict, 1);
+//    
+//    std::vector<std::vector<float>> results = make_predictions(fifty_trees,one_crime);
+//    
+//    print_test("Sucesfully creates vector with one result from 50 trees", results.size() == 1);
+//    
+//    
+//    int crime_id = one_crime[0]->id;
+//    int prediction_id = results[0][0];
+//    
+//    print_test("Prediction id and actual id match", crime_id == prediction_id);
+//    float sum_of_probs = 0;
+//    for (int i=1; i<40; i++) {
+//        sum_of_probs = sum_of_probs + results[0][i];
+//    }
+//    
+//    print_test("Sum of predicted probabilities is not greater than 1", sum_of_probs <= 1);
     
     
     
