@@ -89,9 +89,9 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     
    // std::vector<int>* v1 = new std::vector<int>{ 0, 1, 2 };
    // print_test("New tree will check all features", (* (*t1).feature_indeces) == (*v1) );
-    std::vector<int>* v2 = new std::vector<int>{ 0};
-    (*t1).set_feature_indeces(v2);
-    print_test("Set tree will check set features", (*(*t1).feature_indeces) == (*v2));
+    std::vector<int> v2 = std::vector<int>{ 0};
+    (*t1).set_feature_indeces(&v2);
+    print_test("Set tree will check set features", (*t1).feature_indeces == v2);
     
     C45* t2 = new C45(&homogeneous, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     class_of_tree = t2->tree_class;
@@ -389,20 +389,20 @@ void tree_cross_validation(std::vector<Crime*> train){
 
 int main(int argc, char** argv) {
     std::vector<Crime*> train = readCsv("train.csv");
-    std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
-    std::vector<Crime*> reduced = readCsv("reduced.csv");
-    std::vector<Crime*> predict = readCsv2("test.csv");
+    //std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
+    //std::vector<Crime*> reduced = readCsv("reduced.csv");
+    //std::vector<Crime*> predict = readCsv2("test.csv");
     
-    reader_test(train, predict);
-    coordinate_tests();
-    c45_basic_tests(homogeneous);
-    c45_set_operation_test(homogeneous);
-    c45_gain_calculation_test(homogeneous, reduced);
-    c45_classification_test(train, predict);
-    random_forest_test(train,predict);
-    speed_test(train);
-    feature_analysis(train);
-    //tree_cross_validation(train);
+    //reader_test(train, predict);
+    //coordinate_tests();
+    //c45_basic_tests(homogeneous);
+    //c45_set_operation_test(homogeneous);
+    //c45_gain_calculation_test(homogeneous, reduced);
+    //c45_classification_test(train, predict);
+    //random_forest_test(train,predict);
+    //speed_test(train);
+    //feature_analysis(train);
+    tree_cross_validation(train);
         
    	return 0;
 }

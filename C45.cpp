@@ -110,14 +110,14 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 	
 	children = std::map<std::string, C45*>();
 	//lo hago empezar con todas las features
-	feature_indeces = new std::vector<int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+	feature_indeces = std::vector<int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {
 		
 		//Search by descrete feature
 		best_test = discrete_test[0];
-		int best_index = (*feature_indeces)[0];
+		int best_index = feature_indeces[0];
 		int next_index;
 		float best_gain = gain_ratio(*crimes, discrete_test[0], best_index);
 		float next_gain;
@@ -125,9 +125,9 @@ C45::C45(std::vector<Crime*>* crimes, int max_hight, int min_divisible, bool loc
 		
 		for (int i = 0; i != DISCRETE_TESTS; i++){
 			//usa la funcion dos veces por vuelta. Se podra optimizar?
-			for (unsigned int next = 0; next != feature_indeces->size() ; next++){
+			for (unsigned int next = 0; next != feature_indeces.size() ; next++){
 				if(i == 0 && next == 0) continue;
-				next_index = (*feature_indeces)[next];
+				next_index = feature_indeces[next];
 				next_gain = gain_ratio(*crimes, discrete_test[i], next_index);
 				if (next_gain > best_gain){
 					best_gain = next_gain;
@@ -185,7 +185,7 @@ bool C45::is_leaf(){
 }
 
 void C45::set_feature_indeces(std::vector<int>* indeces){
-	this->feature_indeces = indeces;
+	this->feature_indeces = *indeces;
 }
 
 

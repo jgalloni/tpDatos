@@ -204,5 +204,5 @@ void Crime::load_address(char *address) {
 }
 
 Crime::~Crime(void){
-	delete this->coordinate;
+	delete coordinate;
 }
