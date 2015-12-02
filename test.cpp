@@ -18,12 +18,11 @@
 #define DAY_OF_WEEK 0
 #define DISTRICT 1
 #define ADDRESS 2
-#define DAYLIGHT 3
+#define SEASON 3
 #define MOMENT_OF_DAY 4
 #define MONTH 5
 #define HOUR 6
-#define SEASON 7
-#define ENDS_MEET 8
+#define WEATHER 7
 #define DEFAULT_HEIGHT 10
 #define MIN_DIVISIBLE 5
 
@@ -97,12 +96,13 @@ void c45_basic_tests(std::vector<Crime*> homogeneous) {
     delete(t2);
 }
 
-void c45_set_operation_test(std::vector<Crime*> homogeneous) {
+void c45_set_operation_test(std::vector<Crime*> homogeneous, std::vector<Crime*> train) {
     print_title(" OPERATIONS WITH SETS ");
     
     print_test("Homogeneous set has 1 subset by day of week (Wednesday)", subsets_by_feature(homogeneous, DAY_OF_WEEK) == 1);
     print_test("Homogeneous set has 5 subsets by district", subsets_by_feature(homogeneous, DISTRICT) == 5);
-    print_test("Homogeneous set has 3 subsets by adress (av,st,/)", subsets_by_feature(homogeneous, ADDRESS) == 3);
+    print_test("Homogeneous set has 3 subsets by address (av,st,/)", subsets_by_feature(train, ADDRESS) == 3);
+    cout << subsets_by_feature(homogeneous, ADDRESS) << endl;
     
     std::map<const std::string, std::vector<Crime*>> subs0 = split_by_discrete_feature(homogeneous, DAY_OF_WEEK);
     std::map<const std::string, std::vector<Crime*>> subs1 = split_by_discrete_feature(homogeneous, DISTRICT);
@@ -140,6 +140,7 @@ void c45_gain_calculation_test(std::vector<Crime*> homogeneous, std::vector<Crim
     print_test("Info of reduced is greater than 2", info1 > 2);
     print_test("Info of reduced is less than 2.1", info1 < 2.1);
     print_test("Info of day of week partition is equal to original set", infox0 == info1);
+    cout << infox0 << " " << info1 << endl;
     print_test("Info of district partition is greater than 0", infox1 > 0);
     print_test("Info of district partition is greater than 0.9", infox1 > 0.9);
     print_test("Info of district partition is less than 1", infox1 < 1 );
@@ -213,55 +214,6 @@ void random_forest_test(std::vector<Crime*> crimes, std::vector<Crime*> predict)
     
     print_test("Sum of predicted probabilities is not greater than 1", sum_of_probs <= 1);
     
-//    print_title(" RANDOM FOREST TEST ");
-//    
-//    std::vector<Crime*> sub0 = generate_subset(crimes, 50);
-//    std::vector<Crime*> sub1 = generate_subset(crimes, 50);
-//    
-//    print_test("Succesfully generates subset of size 50", sub1.size() == 50);
-//    print_test("Previous subset not size 51", sub1.size() != 51);
-//    
-//    C45* t0 = new C45(sub1, DEFAULT_HEIGHT, 1);
-//    
-//    print_test("Creates tree with it", t0);
-//    
-//    bool different = false;
-//    for(std::vector<Crime*>::size_type i = 0; i != sub0.size(); i++){
-//        if(sub0[i] != sub1[i]){
-//            different = true;
-//            continue;
-//        }
-//    }
-//    print_test("Two separately generated subsets of same size are different", different == true);
-//    
-//    std::vector<C45*> one_tree = generate_trees(crimes, 1, 50);
-//    C45* t1 = one_tree[0];
-//    print_test("Sucesfully creates one tree", t1);
-//    
-//    std::vector<C45*> fifty_trees = generate_trees(crimes, 50, 100);
-//    
-//    print_test("Sucesfully creates 50 trees", fifty_trees.size() == 50);
-//    
-//    std::vector<Crime*> one_crime = generate_subset(predict, 1);
-//    
-//    std::vector<std::vector<float>> results = make_predictions(fifty_trees,one_crime);
-//    
-//    print_test("Sucesfully creates vector with one result from 50 trees", results.size() == 1);
-//    
-//    
-//    int crime_id = one_crime[0]->id;
-//    int prediction_id = results[0][0];
-//    
-//    print_test("Prediction id and actual id match", crime_id == prediction_id);
-//    float sum_of_probs = 0;
-//    for (int i=1; i<40; i++) {
-//        sum_of_probs = sum_of_probs + results[0][i];
-//    }
-//    
-//    print_test("Sum of predicted probabilities is not greater than 1", sum_of_probs <= 1);
-    
-    
-    
 }
 
 void speed_test(std::vector<Crime*> crimes){
@@ -271,13 +223,11 @@ void speed_test(std::vector<Crime*> crimes){
     std::vector<Crime*> sub1 = generate_subset(crimes, 100);
     std::vector<Crime*> sub2 = generate_subset(crimes, 1000);
     std::vector<Crime*> sub3 = generate_subset(crimes, 10000);
-    //std::vector<Crime*> sub4 = generate_subset(crimes, 100000);
     
     
     C45* t1;
     C45* t2;
     C45* t3;
-    //C45* t4;
     
     
     int start;
@@ -297,17 +247,10 @@ void speed_test(std::vector<Crime*> crimes){
     t3 = new C45(sub3, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     end = clock();
     std::cout << "Size 10000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
-    
-    //start = clock();
-    //t4 = new C45(&sub4, DEFAULT_HEIGHT, MIN_DIVISIBLE);
-    //end = clock();
-    //std::cout << "Size 100000 tree took " << end - start << " ticks, or " << ((float)end - start)/CLOCKS_PER_SEC << " seconds." << std::endl;
-    
-    //para suprimir warning de que las variables no se usan.
+
     t1->is_leaf();
     t2->is_leaf();
     t3->is_leaf();
-    //t4->is_leaf();
     
     delete t1;
     delete t2;
@@ -374,11 +317,11 @@ void feature_analysis(std::vector<Crime*> data){
 	single_gain_test(data, split_by_discrete_feature, DAY_OF_WEEK, "DayOfWeek");
 	single_gain_test(data, split_by_discrete_feature, DISTRICT, "District");
 	single_gain_test(data, split_by_discrete_feature, ADDRESS, "Address");
-	single_gain_test(data, split_by_discrete_feature, DAYLIGHT, "Daylight");
+	single_gain_test(data, split_by_discrete_feature, SEASON, "Season");
 	single_gain_test(data, split_by_discrete_feature, MOMENT_OF_DAY, "MomentOfDay");
 	single_gain_test(data, split_by_discrete_feature, MONTH, "Month");
 	single_gain_test(data, split_by_discrete_feature, HOUR, "Hour");
-	single_gain_test(data, split_by_discrete_feature, SEASON, "Season");
+	single_gain_test(data, split_by_discrete_feature, WEATHER, "Weather");
 	single_gain_test(data, split_in_3_clusters, 0, "Location 3 clusters");
 	single_gain_test(data, split_in_4_clusters, 0, "Location 4 clusters");
 	single_gain_test(data, split_in_quadrants, 0, "Location 4 quadrants");
@@ -393,7 +336,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 	int start;
     int end;
 	
-	int tree_size = 10000;
+	int tree_size = 9000;
 	
 	int total_predictions = 0;
 	int correct_predictions = 0;
@@ -417,9 +360,7 @@ void tree_cross_validation(std::vector<Crime*> train){
 		predict_this = tree_food.back();
 		tree_food.pop_back();
 		tree = new C45(tree_food, DEFAULT_HEIGHT, MIN_DIVISIBLE);
-		
-		//cout << "llegue hasta aca" << endl;
-		
+				
 		correct_answer = predict_this -> category;
 		prediction = make_prediction(*tree, predict_this);
 		
@@ -442,20 +383,20 @@ void tree_cross_validation(std::vector<Crime*> train){
 
 int main(int argc, char** argv) {
     std::vector<Crime*> train = readCsv("train.csv");
-    std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
-    std::vector<Crime*> reduced = readCsv("reduced.csv");
-    std::vector<Crime*> predict = readCsv2("test.csv");
+    //std::vector<Crime*> homogeneous = readCsv("homogeneous.csv");
+    //std::vector<Crime*> reduced = readCsv("reduced.csv");
+    //std::vector<Crime*> predict = readCsv2("test.csv");
     
-    reader_test(train, predict);
-    coordinate_tests();
-    c45_basic_tests(homogeneous);
-    c45_set_operation_test(homogeneous);
-    c45_gain_calculation_test(homogeneous, reduced);
-    c45_classification_test(train, predict);
-    random_forest_test(train,predict);
-    speed_test(train);
-    feature_analysis(train);
-    //tree_cross_validation(train);
+    //reader_test(train, predict);
+    //coordinate_tests();
+    //c45_basic_tests(homogeneous);
+    //c45_set_operation_test(homogeneous, train);
+    //c45_gain_calculation_test(homogeneous, reduced);
+    //c45_classification_test(train, predict);
+    //random_forest_test(train,predict);
+    //speed_test(train);
+    //feature_analysis(train);
+    tree_cross_validation(train);
         
    	return 0;
 }

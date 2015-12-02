@@ -11,7 +11,7 @@ Crime::Crime(float x, float y){
 	this->coordinate = coordinate;
 }
 
-void Crime::set_category(char *category){
+void Crime::set_category(char* category){
 	this->category = std::string(category);
 }
 
@@ -21,6 +21,10 @@ void Crime::load_date(const tm &date) {
 	set_moment_of_the_day();
 	this->features[5]=get_month();
 	this->features[6]=get_hour();
+}
+
+void Crime::load_weather(char* weather){
+	this->features[7] = std::string(weather);
 }
 
 std::string Crime::get_season(){
@@ -61,11 +65,6 @@ std::string Crime::get_month(){
 	return "";
 }
 
-std::string Crime::get_daylight(){
-	if(date.tm_hour >= 6 && date.tm_hour <= 18) return "+";
-	else return "-";
-}
-
 std::string Crime::get_hour(){
 	return std::to_string(date.tm_hour);
 }
@@ -94,15 +93,15 @@ void Crime::set_moment_of_the_day() {
 	}
 }
 
-void Crime::load_day_of_week(char *dayOfWeek) {
+void Crime::load_day_of_week(char* dayOfWeek) {
 	this->features[0]=std::string(dayOfWeek);
 }
 
-void Crime::load_district(char *district) {
+void Crime::load_district(char* district) {
 	this->features[1]=std::string(district);
 }
 
-void Crime::load_address(char *address) {
+void Crime::load_address(char* address) {
 	std::string slash ("/");
 	std::string av("AV");
 	std::string dirs[2] = { slash, av };
