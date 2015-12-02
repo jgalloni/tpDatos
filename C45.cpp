@@ -13,7 +13,7 @@
 
 #define DISCRETE_TESTS 1
 #define LOCATION_TESTS 3
-#define NUMBER_OF_FEATURES 8
+#define NUMBER_OF_FEATURES 7
 
 using namespace std;
 
@@ -120,7 +120,7 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 	int feature_index2 = random_feature_index();
 	int feature_index3 = random_feature_index();
 
-	feature_indeces = std::vector<int>{ feature_index1, feature_index2, feature_index3};
+  feature_indeces = std::vector<int>{ feature_index1, feature_index2, feature_index3};
 
 	//Search of best split
 	if (tree_class.empty() && max_hight > 0) {
@@ -144,6 +144,7 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 					best_index = next_index;
 					best_split = (discrete_test[i])(crimes, best_index);
 					best_test = discrete_test[i];
+
 				}
 			}
 		}
@@ -160,6 +161,7 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 						best_test = location_test[i];
 						best_index = -1;
 						location_branch = true;
+
 				}
 			}
 		}
