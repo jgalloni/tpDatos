@@ -13,7 +13,7 @@
 
 #define DISCRETE_TESTS 1
 #define LOCATION_TESTS 3
-#define NUMBER_OF_FEATURES 8
+#define NUMBER_OF_FEATURES 7
 
 using namespace std;
 
@@ -79,16 +79,13 @@ std::string make_prediction(C45 tree, Crime* crime){
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
 	if(!tree.tree_class.empty()){
 		crime->category = tree.tree_class;
-		//cout << "clasificado como " << tree.tree_class << endl;
 	} else {
 		std::map<std::string, C45*> children = tree.children;
 		int split_index = tree.split_index;
 		std::string my_type = find_type(tree, crime, split_index);
 		if(children.count(my_type) == 0){
-			//cout << "entre por other" << endl;
 			make_prediction( *(children["other"]), crime);
 		} else {
-			//cout << "entre por " << my_type << endl;
 			make_prediction( *(children[my_type]), crime);
 		}
 	}
@@ -134,7 +131,6 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 		std::map<const std::string, std::vector<Crime*>> best_split = (discrete_test[0])(crimes, best_index);
 
 		for (int i = 0; i != DISCRETE_TESTS; i++){
-			//usa la funcion dos veces por vuelta. Se podra optimizar?
 			for (unsigned int next = 0; next != feature_indeces.size() ; next++){
 				if(i == 0 && next == 0) continue;
 				next_index = feature_indeces[next];
@@ -144,12 +140,12 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 					best_index = next_index;
 					best_split = (discrete_test[i])(crimes, best_index);
 					best_test = discrete_test[i];
+
 				}
 			}
 		}
 
 		//Search by location
-
 		bool location_branch = location_assigned;
 		if(location_assigned == false){
 			for(int i = 0; i != LOCATION_TESTS; i++){
@@ -160,6 +156,7 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 						best_test = location_test[i];
 						best_index = -1;
 						location_branch = true;
+
 				}
 			}
 		}

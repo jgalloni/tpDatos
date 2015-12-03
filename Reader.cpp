@@ -36,8 +36,7 @@ std::vector<Crime*> readCsv(std::string fileName) {
 	char address[60];
 	char x[60];
 	char y[60];
-	char weather[60];
-	
+
 	double maximoX=0;
 	double maximoY=0;
 	double minimoX=0;
@@ -45,23 +44,20 @@ std::vector<Crime*> readCsv(std::string fileName) {
 	
     std::vector<Crime*> crimes;
     
-    
-    
     if(!file_c.is_open()){
-        cout << "Error reading file:" << fileName << endl;
+        std::cout<<"Error reading file:"<<fileName<<"\n";
         return crimes ;
     }
     
     std::cout<<"Reading file:"<<fileName<<"\n";
     
     Crime* crime;
-    
     file_c.getline(line,400);
 	file_c.getline(line, 400);
 	
 	while (!file_c.eof()) {
 		check_quotemarks(line);
-		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, address, x, y, weather);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", date, category, desc, day, district, resolution, address, x, y);
 		if(atof(y)>50){ // evita los datos fuera de san francisco
 			file_c.getline(line, 400);
 			continue;
@@ -71,8 +67,6 @@ std::vector<Crime*> readCsv(std::string fileName) {
         crime->load_address(address);
         crime->load_day_of_week(day);
         crime->set_category(category);
-        crime->load_weather(weather);
-       
         tm tm1;
         sscanf(date,"%4d - %2d - %2d %2d : %2d : %2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
               &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
@@ -108,11 +102,10 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 	char address[60];
 	char x[60];
 	char y[60];
-	char weather[60];
 
 	Crime *crime;
 	file_c.getline(line,400);
-	file_c.getline(line,400);
+	file_c.getline(line, 400);
 
 	std::vector<Crime*> crimes;
 	if(!file_c.is_open()){
@@ -121,7 +114,7 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 	}
 
 	while (!file_c.eof()) {
-		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", id, date, day, district, address, x, y, weather);
+		sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", id, date, day, district, address, x, y);
 
 		crime = new Crime(atof(x),atof(y));
 		crime->load_district(district);
@@ -132,7 +125,6 @@ std::vector<Crime*> readCsv2(std::string fileName) {//lee el archivo a predecir
 		sscanf(date,"%4d%2d%2d %2d%2d%2d",&tm1.tm_year,&tm1.tm_mon,&tm1.tm_mday,
 			   &tm1.tm_hour,&tm1.tm_min,&tm1.tm_sec);
 		crime->load_date(tm1);
-		crime->load_weather(weather);
 		crimes.push_back(crime);
 		file_c.getline(line, 400);
 

@@ -27,12 +27,11 @@ class Crime {
 		int prediction_count;
 		std::string features[N_FEATURES];
 		
-		void set_category(char* category);
+		void set_category(char *category);
 		void load_date(const tm &date);
-		void load_day_of_week(char* day_of_Week);
-		void load_district(char* district);
-		void load_address(char* address);
-		void load_weather(char* weather);
+		void load_day_of_week(char *day_of_Week);
+		void load_district(char *district);
+		void load_address(char *address);
 		void set_coordinate(float x, float y);
 		
 	private:
