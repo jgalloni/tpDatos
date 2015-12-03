@@ -56,13 +56,7 @@ std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subse
     std::vector<C45*>* trees = new std::vector<C45*>();
     std::vector<std::future<void>> futures;
     for (int i=0; i<n_trees; i++) {
-        //subset = generate_subset(set, subset_size);
-        //new_tree = new C45(subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
-        //(*trees).push_back(new_tree);
         futures.push_back(std::async(std::launch::async,getTree, set,subset,subset_size,new_tree,trees));
-        //  if (i%10==0 || i== n_trees-1){
-        //      std::cout << "van " << i << " arboles\n" << std::endl;
-        //  }
     }
     for(auto &e : futures) {
         e.get();
