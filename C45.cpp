@@ -126,24 +126,22 @@ C45::C45(std::vector<Crime*> crimes, int max_hight, int min_divisible, bool loca
 		best_test = discrete_test[0];
 		int best_index = feature_indeces[0];
 		int next_index;
+		
 		float best_gain = gain_ratio(crimes, discrete_test[0], best_index);
 		float next_gain;
 		std::map<const std::string, std::vector<Crime*>> best_split = (discrete_test[0])(crimes, best_index);
-
-		for (int i = 0; i != DISCRETE_TESTS; i++){
-			for (unsigned int next = 0; next != feature_indeces.size() ; next++){
-				if(i == 0 && next == 0) continue;
-				next_index = feature_indeces[next];
-				next_gain = gain_ratio(crimes, discrete_test[i], next_index);
-				if (next_gain > best_gain){
-					best_gain = next_gain;
-					best_index = next_index;
-					best_split = (discrete_test[i])(crimes, best_index);
-					best_test = discrete_test[i];
-
-				}
+		
+		for (unsigned int next = 0; next != feature_indeces.size() ; next++){
+			next_index = feature_indeces[next];
+			next_gain = gain_ratio(crimes, discrete_test[0], next_index);
+			if (next_gain > best_gain){
+				best_gain = next_gain;
+				best_index = next_index;
+				best_split = (discrete_test[0])(crimes, best_index);
+				best_test = discrete_test[0];
 			}
 		}
+		
 
 		//Search by location
 		bool location_branch = location_assigned;

@@ -31,33 +31,6 @@ std::map<const std::string, std::vector<Crime*>> split_by_discrete_feature(std::
 	return subsets;
 }
 
-/*
-std::map<const std::string, std::vector<Crime*>*> split_biggest_set(std::vector<Crime*> set, int feature_index){
-	//En vez de dividir n valores en n subsets, separa el subset mas grande
-	std::map<const std::string, std::vector<Crime*>*>* subsets = new std::map<const std::string, std::vector<Crime*>*>();
-	Crime* crime;
-	
-	std::vector<Crime*>* major = new std::vector<Crime*>();
-	std::vector<Crime*>* minor = new std::vector<Crime*>();
-	
-	std::string major_class = popular_crime(&set);
-	(*subsets)[major_class] = major;
-	
-	for(std::vector<Crime*>::size_type i = 0; i != set.size(); ++i) {
-		crime = set[i];
-		std::string category = crime->features[feature_index];
-		
-		if(subsets->count(category) == 0) {
-				(*subsets)[category] = minor;
-		}
-		
-		(*subsets)[category]->push_back(crime);
-	}
-	
-	return *subsets;
-}
-*/
-
 //LOCATION FUNCTIONS
 
 std::map<const std::string, std::vector<Crime*>> split_in_quadrants(std::vector<Crime*> set, int feature_index = 0){
