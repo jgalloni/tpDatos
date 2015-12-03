@@ -1,15 +1,14 @@
 #include <string>
 #include <vector>
-#include <stdlib.h>
 #include "Crime.h"
 #include "C45.h"
-#include  <random>
 #include  <iterator>
 #include <iomanip>
 
 //esto despues se saca
 #include <iostream>
 #include <fstream>
+#include <future>
 
 
 #define NUMBER_OF_CATEGORIES 39
@@ -43,18 +42,29 @@ std::vector<Crime*> generate_subset(std::vector<Crime*> set, int subset_size){
 }
 
 
+void getTree(std::vector<Crime*> set,std::vector<Crime*> subset, int subset_size,C45* new_tree,std::vector<C45*>* trees){
+    subset = generate_subset(set, subset_size);
+    new_tree = new C45(subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+    (*trees).push_back(new_tree);
+}
+
 std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subset_size){
     //por ahi podemos hacer que en vez de subset size le pasemos un porcentaje 0-1
     std::vector<Crime*> subset = std::vector<Crime*>();
     C45* new_tree;
     std::vector<C45*>* trees = new std::vector<C45*>();
+    std::vector<std::future<void>> futures;
     for (int i=0; i<n_trees; i++) {
-        subset = generate_subset(set, subset_size);
-        new_tree = new C45(subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
-        (*trees).push_back(new_tree);
-      //  if (i%10==0 || i== n_trees-1){
-      //      std::cout << "van " << i << " arboles\n" << std::endl;
-      //  }
+        //subset = generate_subset(set, subset_size);
+        //new_tree = new C45(subset, DEFAULT_HEIGHT, MIN_DIVISIBLE);
+        //(*trees).push_back(new_tree);
+        futures.push_back(std::async(std::launch::async,getTree, set,subset,subset_size,new_tree,trees));
+        //  if (i%10==0 || i== n_trees-1){
+        //      std::cout << "van " << i << " arboles\n" << std::endl;
+        //  }
+    }
+    for(auto &e : futures) {
+        e.get();
     }
     return (*trees);
 }
@@ -62,7 +72,6 @@ std::vector<C45*> generate_trees(std::vector<Crime*> set, int n_trees, int subse
 std::vector<float> make_predictions(std::vector<C45*> trees, std::vector<Crime*> predict_these){
     // por ahora que devuelva un map con strings en cada id, despues vemos si lo hacemos void y
     // que output directamente o que.
-
 
     const std::string categories[] = {"ARSON","ASSAULT","BAD CHECKS","BRIBERY","BURGLARY","DISORDERLY CONDUCT","DRIVING UNDER THE INFLUENCE","DRUG/NARCOTIC","DRUNKENNESS","EMBEZZLEMENT","EXTORTION","FAMILY OFFENSES","FORGERY/COUNTERFEITING","FRAUD","GAMBLING","KIDNAPPING","LARCENY/THEFT","LIQUOR LAWS","LOITERING","MISSING PERSON","NON-CRIMINAL","OTHER OFFENSES","PORNOGRAPHY/OBSCENE MAT","PROSTITUTION","RECOVERED VEHICLE","ROBBERY","RUNAWAY","SECONDARY CODES","SEX OFFENSES FORCIBLE","SEX OFFENSES NON FORCIBLE","STOLEN PROPERTY","SUICIDE","SUSPICIOUS OCC","TREA","TRESPASS","VANDALISM","VEHICLE THEFT","WARRANTS","WEAPON LAWS"};
 
@@ -132,7 +141,7 @@ std::vector<float> make_predictions(std::vector<C45*> trees, std::vector<Crime*>
     for (unsigned int i=0; i<predict_these.size(); ++i) {
         to_predict = predict_these[i];
         for (unsigned int j=0; j<trees.size(); ++j) {
-            prediction = make_prediction(*trees[j], to_predict);
+            prediction = make_prediction_concurrent(*trees[j], to_predict);
             prediction_index = categories_indeces[prediction];
             probabilities[prediction_index] = probabilities[prediction_index] + 1/divisor;
         }
@@ -185,11 +194,9 @@ std::vector<float> make_predictions(std::vector<C45*> trees, std::vector<Crime*>
 //
 //    }
 
-
     return (results);
 
 }
-
 
 void output_predictions(std::vector<float> results){
 

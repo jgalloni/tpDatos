@@ -32,5 +32,6 @@ class C45 {
 };
 
 std::string make_prediction(C45 tree, Crime* crime);
+std::string make_prediction_concurrent(C45 tree, Crime* crime);
 
 #endif //C45_H

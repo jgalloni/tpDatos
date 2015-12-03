@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <iostream>
+#include <future>
 
 #define DISCRETE_TESTS 1
 #define LOCATION_TESTS 3
@@ -76,6 +77,7 @@ std::string class_of_tree(std::vector<Crime*>* crimes, int min_divisible){
 
 std::string make_prediction(C45 tree, Crime* crime){
 
+
 	//posible optimizacion: anidar una funcion recursiva que busque solo el string
 	if(!tree.tree_class.empty()){
 		crime->category = tree.tree_class;
@@ -91,6 +93,12 @@ std::string make_prediction(C45 tree, Crime* crime){
 	}
 
 	return (crime->category);
+}
+
+std::string make_prediction_concurrent(C45 tree, Crime* crime){
+	std::future<string> result= std::async(std::launch::async,make_prediction,tree,crime) ;
+	return  result.get();
+
 }
 
 int random_feature_index(){

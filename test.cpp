@@ -262,8 +262,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     C45* t1 = new C45(sample1, DEFAULT_HEIGHT, MIN_DIVISIBLE);
     Crime* predict_this = predict[0];
     
-    std::string prediction0 = make_prediction(*t0, predict_this);
-    std::string prediction1 = make_prediction(*t1, predict_this);
+    std::string prediction0 = make_prediction_concurrent(*t0, predict_this);
+    std::string prediction1 = make_prediction_concurrent(*t1, predict_this);
     
     print_test("Prediction succesfully made", !prediction0.empty());
     cout << "Prediction is: " << prediction0 << endl;
@@ -272,8 +272,8 @@ void c45_classification_test(std::vector<Crime*> data, std::vector<Crime*> predi
     cout << "Prediction is: " << prediction1 << endl;
     
     predict_this = predict[1000];
-    prediction0 = make_prediction(*t0, predict_this);
-    prediction1 = make_prediction(*t1, predict_this);
+    prediction0 = make_prediction_concurrent(*t0, predict_this);
+    prediction1 = make_prediction_concurrent(*t1, predict_this);
     
     
     print_test("Another instance, first tree", !prediction0.empty());
